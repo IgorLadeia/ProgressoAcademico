@@ -1,3 +1,6 @@
+using Microsoft.EntityFrameworkCore;
+using ProgressoAcademico.Context;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -8,19 +11,26 @@ var builder = WebApplication.CreateBuilder(args);
 // todos serão servições que a aplicação pode usar.
 
 
+var mySqlConnection = builder.Configuration.GetConnectionString("DefaultConnection");
+
+
+builder.Services.AddDbContext<ProgressoAcademicoDbContext>(options=>options.UseMySql(mySqlConnection,ServerVersion.AutoDetect(mySqlConnection)));
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddControllers();
+builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddControllers();
 // o builder.Services.AddDbContext é usado para adicionar o contexto do banco de dados à aplicação.
 // nesse caso, estou usando o contexto ProgressoAcademicoContext que está definido na pasta Data.
 // o options.UseSqlServer é usado para configurar a conexão com o banco de dados MySQL Server.
 
-builder.Services.AddOpenApi();
 
 var app = builder.Build();
 
 // configura o pipeline de requisições HTTP.
 if (app.Environment.IsDevelopment())
 {
-    app.MapOpenApi();
+    app.UseSwagger();
+    app.UseSwaggerUI();
 }
 
 // app.UseHttpsRedirection é usado para redirecionar todas as requisições HTTP para HTTPS.
