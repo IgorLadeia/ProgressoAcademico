@@ -1,0 +1,64 @@
+﻿@{
+    ViewData["Title"] = "Login";
+    Layout = "_Layout";
+}
+
+<link rel="stylesheet" href="~/css/login.css" />
+
+<div class="login-container">
+
+    <!-- LADO ESQUERDO -->
+    <div class="login-form">
+        <div class="logo">
+            <span class="logo-text">UFABC</span>
+        </div>
+
+        <h2>Login</h2>
+
+        @if (ViewBag.Erro != null)
+        {
+            <div class="error">@ViewBag.Erro</div>
+        }
+
+        <form method="post">
+            <div class="input-group">
+                <input type="email" name="email" placeholder="Seu email institucional" required />
+            </div>
+
+            <div class="input-group">
+                <input type="password" name="senha" placeholder="Sua senha" required />
+            </div>
+
+            <div class="options">
+                <label>
+                    <input type="checkbox" /> Lembrar-me
+                </label>
+                <a href="#">Esqueceu a senha?</a>
+            </div>
+
+            <button type="submit" class="btn-login">Entrar</button>
+
+            <div class="register">
+                ou <a href="#">Cadastrar-se</a>
+            </div>
+        </form>
+    </div>
+
+    <!-- LADO DIREITO -->
+    <div class="login-info">
+        <div class="info-box">
+            <h3>📢 Próxima Data de Solicitação</h3>
+            <p>Data limite para solicitação de progresso acadêmico:</p>
+
+            <div class="date">15 de Maio, 2024</div>
+
+            <ul>
+                <li>📄 Prepare a documentação necessária</li>
+                <li>📤 Envie sua solicitação pelo portal</li>
+            </ul>
+
+            <a href="#" class="link">Ver todas as datas importantes</a>
+        </div>
+    </div>
+
+</div>
