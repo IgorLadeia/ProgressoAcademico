@@ -26,6 +26,8 @@ builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
+app.UseStaticFiles(); // <-- necessário para servir arquivos em wwwroot
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();

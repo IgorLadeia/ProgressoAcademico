@@ -31,6 +31,9 @@
 	<ItemGroup>
 	  <Folder Include="ViewModels\" />
 	  <Folder Include="Services\" />
+	  <Folder Include="wwwroot\css\base\" />
+	  <Folder Include="wwwroot\css\layout\" />
+	  <Folder Include="wwwroot\js\images\" />
 	</ItemGroup>
 
 </Project>
