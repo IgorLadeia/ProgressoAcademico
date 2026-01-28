@@ -1,0 +1,88 @@
+            @section Styles {
+    <link rel="stylesheet" href="~/css/pages/login.css" asp-append-version="true" />
+}
+
+@{
+    ViewData["Title"] = "Login";
+}
+
+/* preservando comentário original do arquivo */
+<!-- resto da view -->
+
+<div class="page-bg">
+    <div class="login-card">
+
+        <!-- LEFT: conteúdo branco com formulário -->
+        <div class="login-left">
+            <header class="brand">
+                <img src="~/images/logo-ufabc.png" alt="UFABC" class="brand-logo" />
+                <nav class="brand-nav">
+                    <a href="#">Home</a>
+                    <a href="#">Sobre</a>
+                    <a href="#">Contato</a>
+                    <a class="active" href="#">Login</a>
+                </nav>
+            </header>
+
+            <main class="form-area" role="main" aria-labelledby="login-title">
+                <h1 id="login-title">Login</h1>
+
+                <form method="post" action="/Account/Login" class="login-form" autocomplete="on">
+                    <div class="input-group">
+                        <label for="Email" class="sr-only">Seu email</label>
+                        <div class="input-with-icon">
+                            <span class="icon">👤</span>
+                            <input id="Email" name="Email" type="email" placeholder="seu@exemplo.edu.br" required />
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="Password" class="sr-only">Sua senha</label>
+                        <div class="input-with-icon input-password">
+                            <span class="icon">🔒</span>
+                            <input id="Password" name="Password" type="password" placeholder="••••••••" required />
+                            <button type="button" class="eye-btn js-toggle-password" data-target="#Password" aria-label="Alternar visibilidade">👁️</button>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <label class="checkbox">
+                            <input type="checkbox" name="Remember" /> Lembrar-me
+                        </label>
+                        <a class="forgot" href="#">Esqueceu a senha?</a>
+                    </div>
+
+                    <button class="btn-primary" type="submit">Entrar</button>
+
+                    <div class="divider"><span>ou</span></div>
+                    <p class="register-link">Não possui conta? <a href="#">Cadastrar-se</a></p>
+                </form>
+            </main>
+        </div>
+
+        <!-- RIGHT: painel verde com cartão de informação -->
+        <aside class="login-right" aria-hidden="false">
+            <div class="right-card">
+                <div class="right-header">
+                    <span class="megaphone">📣</span>
+                    <h3>Próxima Data de Solicitação</h3>
+                </div>
+
+                <p class="right-sub">Data limite para solicitação de progresso acadêmico</p>
+
+                <div class="big-date">
+                    <span class="calendar">📅</span>
+                    <strong>15 de Maio, 2024</strong>
+                </div>
+
+                <ul class="tips">
+                    <li>Prepare a documentação necessária</li>
+                    <li>Envie sua solicitação pelo portal oficial</li>
+                </ul>
+
+                <a class="all-dates" href="#">Ver todas as datas importantes</a>
+            </div>
+        </aside>
+
+    </div>
+</div>
