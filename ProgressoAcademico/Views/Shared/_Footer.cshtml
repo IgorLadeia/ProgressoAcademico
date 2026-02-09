@@ -1,38 +1,6 @@
-﻿<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - Progresso Acadêmico</title>
-
-    <!-- Fonte -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
-
-    <!-- CSS global -->
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-
-    <!-- CSS por página -->
-    @RenderSection("Styles", required: false)
-</head>
-<body>
-    @RenderBody()
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/feather-icons/4.28.0/feather.min.js"></script>
-    <script>
-        // ícones feather (se usar)
-        if (window.feather) { feather.replace(); }
-
-        // toggle olho da senha
-        document.addEventListener('click', function (e) {
-            if (e.target && e.target.matches('.js-toggle-password, .js-toggle-password *')) {
-                var btn = e.target.closest('.js-toggle-password');
-                var input = document.querySelector(btn.getAttribute('data-target'));
-                if (input) {
-                    if (input.type === 'password') { input.type = 'text'; btn.innerHTML = '🙈'; }
-                    else { input.type = 'password'; btn.innerHTML = '👁️'; }
-                }
-            }
-        });
-    </script>
-</body>
-</html>
+﻿<footer class="auth-footer">
+    <p>
+        TCC - Progresso Acadêmico © @DateTime.Now.Year <br />
+        contato@exemplo.edu.br
+    </p>
+</footer>

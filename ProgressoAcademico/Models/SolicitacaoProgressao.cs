@@ -62,7 +62,7 @@ namespace ProgressoAcademico.Models
         public string Apelido { get; set; }
 
         // 🔗 Uma solicitação possui várias atividades
-        public ICollection<Atividade> Atividades { get; set; }
+        public ICollection<LoginViewModel> Atividades { get; set; }
 
         // 🔗 Uma solicitação pode ter vários documentos
         public ICollection<Documento> Documentos { get; set; }

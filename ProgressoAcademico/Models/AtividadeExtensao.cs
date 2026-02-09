@@ -17,5 +17,5 @@ public class AtividadeExtensao
     public string? PublicoAlvo { get; set; }
 
 
-    public Atividade? Atividade { get; set; }
+    public LoginViewModel? Atividade { get; set; }
 }

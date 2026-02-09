@@ -8,6 +8,7 @@
 
 	<ItemGroup>
 		<!-- OpenAPI compatível com .NET 8 -->
+		<PackageReference Include="BCrypt.Net-Core" Version="1.6.0" />
 		<PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.0" />
 
 		<!-- EF Core 8 -->

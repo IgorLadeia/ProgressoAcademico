@@ -25,7 +25,7 @@ namespace ProgressoAcademico.Context
         public DbSet<TipoProgresso> TiposProgresso { get; set; }
         public DbSet<Nivel> Niveis { get; set; }
 
-        public DbSet<Atividade> Atividades { get; set; }
+        public DbSet<LoginViewModel> Atividades { get; set; }
         public DbSet<TipoAtividade> TiposAtividade { get; set; }
         public DbSet<SubTipoAtividade> SubtiposAtividade { get; set; }
         public DbSet<AtividadeEnsino> AtividadesEnsino { get; set; }
@@ -65,22 +65,22 @@ namespace ProgressoAcademico.Context
             /* ==========================
                ATIVIDADE ↔ ESPECIALIZAÇÕES (1:1)
                ========================== */
-            modelBuilder.Entity<Atividade>()
+            modelBuilder.Entity<LoginViewModel>()
                 .HasOne(a => a.AtividadeEnsino)
                 .WithOne(e => e.Atividade)
                 .HasForeignKey<AtividadeEnsino>(e => e.AtividadeId);
 
-            modelBuilder.Entity<Atividade>()
+            modelBuilder.Entity<LoginViewModel>()
                 .HasOne(a => a.AtividadePesquisa)
                 .WithOne(p => p.Atividade)
                 .HasForeignKey<AtividadePesquisa>(p => p.AtividadeId);
 
-            modelBuilder.Entity<Atividade>()
+            modelBuilder.Entity<LoginViewModel>()
                 .HasOne(a => a.AtividadeExtensao)
                 .WithOne(x => x.Atividade)
                 .HasForeignKey<AtividadeExtensao>(x => x.AtividadeId);
 
-            modelBuilder.Entity<Atividade>()
+            modelBuilder.Entity<LoginViewModel>()
                 .HasOne(a => a.AtividadeAdministrativa)
                 .WithOne(ad => ad.Atividade)
                 .HasForeignKey<AtividadeAdministrativa>(ad => ad.AtividadeId);

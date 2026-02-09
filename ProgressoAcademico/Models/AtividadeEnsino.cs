@@ -19,6 +19,6 @@ public class AtividadeEnsino
     public string Turno { get; set; }
     public int CargaHoraria { get; set; }
 
-    public Atividade Atividade { get; set; }
+    public LoginViewModel Atividade { get; set; }
 
 }

@@ -11,11 +11,11 @@
 /* Cartão central dividido */
 .login-card {
     width: 1300px;
-    max-width: 96%;
+    max-width: 95%;
     border-radius: var(--radius-lg);
     overflow: hidden;
     display: grid;
-    grid-template-columns: 1fr minmax(360px, 480px);
+    grid-template-columns: 60% 40%;
     background: #fff;
     box-shadow: var(--card-shadow);
 }
@@ -192,10 +192,10 @@
 /* floating card */
 .right-card {
     width: 100%;
-    max-width: 320px;
+    max-width: 100%;
     background: rgba(255,255,255,0.95);
     border-radius: 16px;
-    padding: 20px;
+    padding: 15%;
     color: #163e30;
     box-shadow: 0 12px 30px rgba(3,20,12,0.12);
 }
@@ -203,14 +203,14 @@
 .right-header {
     display: flex;
     align-items: center;
-    gap: 12px;
-    margin-bottom: 6px;
+    gap: 2%;
+    margin-bottom: 0px;
     color: var(--green-900)
 }
 
     .right-header .megaphone {
         background: linear-gradient(45deg,#e9f4e8,#dff0df);
-        padding: 8px;
+        padding: 2%;
         border-radius: 10px
     }
 

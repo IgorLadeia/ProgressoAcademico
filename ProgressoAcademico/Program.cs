@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using ProgressoAcademico.Context;
 
+
 var builder = WebApplication.CreateBuilder(args);
 
 // =====================

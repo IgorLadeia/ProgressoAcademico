@@ -1,7 +1,14 @@
-﻿@section Styles {
+﻿
+@model ProgressoAcademico.ViewModels.LoginViewModel
+
+
+<!-- Iniciamos aqui fazendo um contrato com uma aplicação de estilo que será declarada em outro local -->
+<!-- mas so podemos redenrizar um estilo proprio pois informamos isso no layout  -->
+@section Styles {
     <link rel="stylesheet" href="~/css/pages/login.css" asp-append-version="true" />
 }
 
+<!-- aqui estamos declarando o titlo e fazendo a referencia exigida no layout -->
 @{
     ViewData["Title"] = "Login";
 }
@@ -27,6 +34,8 @@
                 <h1 id="login-title">Login</h1>
 
                 <form method="post" action="/Account/Login" class="login-form" autocomplete="on">
+                    @Html.AntiForgeryToken()
+
                     <div class="input-group">
                         <label for="Email" class="sr-only">Seu email</label>
                         <div class="input-with-icon">
@@ -55,6 +64,14 @@
 
                     <div class="divider"><span>ou</span></div>
                     <p class="register-link">Não possui conta? <a href="#">Cadastrar-se</a></p>
+
+                    @if (!ViewData.ModelState.IsValid)
+            {
+                <div class="validation-summary">
+                    @Html.ValidationSummary()
+                </div>
+            }
+
                 </form>
             </main>
         </div>
