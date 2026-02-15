@@ -29,10 +29,10 @@ namespace ProgressoAcademico.Models
 
         // 🎓 Classe docente atual
         [Required]
-        public int ClasseDocenteId { get; set; }
+        public int NivelId { get; set; }
 
-        [ForeignKey(nameof(ClasseDocenteId))]
-        public ClasseDocente ClasseDocente { get; set; }
+        [ForeignKey(nameof(NivelId))]
+        public Nivel Nivel { get; set; }
 
         // 📅 Datas
         [Required]

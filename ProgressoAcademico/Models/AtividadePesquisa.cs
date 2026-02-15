@@ -19,5 +19,5 @@ public class AtividadePesquisa
     public int NumeroAutores { get; set; }
 
 
-    public LoginViewModel Atividade { get; set; }
+    public Atividade Atividade { get; set; }
 }

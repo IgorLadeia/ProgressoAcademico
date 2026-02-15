@@ -1,4 +1,6 @@
-﻿@model HomeViewModel
+﻿@* @model ProgressoAcademico.ViewModels.HomeViewModel
+
+
 @{
     ViewData["Title"] = "Home";
     Layout = "_Layout.Auth";
@@ -8,7 +10,7 @@
 
 <section class="progress-list">
 
-    @foreach (var progress in Model.Progresses)
+    @* @foreach (var progress in Model.Progresses) 
     {
         <div class="progress-card">
             <div class="progress-header">
@@ -49,4 +51,4 @@
     <a class="btn btn-success" asp-controller="Progress" asp-action="Create">
         + Novo Progresso Acadêmico
     </a>
-</div>
+</div> *@

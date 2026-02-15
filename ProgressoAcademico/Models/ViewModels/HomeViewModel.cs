@@ -8,7 +8,7 @@ namespace ProgressoAcademico.ViewModels
         //[EmailAddress(ErrorMessage = "E-mail inválido")]
         //public string Email { get; set; }
 
-        //[Required(ErrorMessage = "Informe a senha")]
+        //[Required(ErrorMessage = "Informe a senha")]'
         //[DataType(DataType.Password)]
         //public string Senha { get; set; }
 

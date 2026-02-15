@@ -32,5 +32,7 @@ namespace ProgressoAcademico.Models
         public ICollection<SolicitacaoProgressao> SolicitacoesComoOrigem { get; set; }
         public ICollection<SolicitacaoProgressao> SolicitacoesComoDestino { get; set; }
 
+        public ICollection<VinculoInstitucional> VinculoInstitucionals { get; set; }    
+
     }
 }

@@ -7,28 +7,12 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace ProgressoAcademico.Migrations
 {
     /// <inheritdoc />
-    public partial class MigracaoInicial : Migration
+    public partial class InitialCreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.AlterDatabase()
-                .Annotation("MySql:CharSet", "utf8mb4");
-
-            migrationBuilder.CreateTable(
-                name: "ClassesDocente",
-                columns: table => new
-                {
-                    ClasseDocenteId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    Nome = table.Column<string>(type: "varchar(100)", maxLength: 100, nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    NivelHierarquico = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_ClassesDocente", x => x.ClasseDocenteId);
-                })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
@@ -279,7 +263,7 @@ namespace ProgressoAcademico.Migrations
                     UsuarioId = table.Column<int>(type: "int", nullable: false),
                     InstituicaoId = table.Column<int>(type: "int", nullable: false),
                     TipoVinculoId = table.Column<int>(type: "int", nullable: false),
-                    ClasseDocenteId = table.Column<int>(type: "int", nullable: false),
+                    NivelId = table.Column<int>(type: "int", nullable: false),
                     DataIngressoInstituicao = table.Column<DateTime>(type: "datetime(6)", nullable: false),
                     DataUltimaProgressao = table.Column<DateTime>(type: "datetime(6)", nullable: true),
                     Ativo = table.Column<bool>(type: "tinyint(1)", nullable: false)
@@ -288,16 +272,16 @@ namespace ProgressoAcademico.Migrations
                 {
                     table.PrimaryKey("PK_VinculosInstitucionais", x => x.UsuarioId);
                     table.ForeignKey(
-                        name: "FK_VinculosInstitucionais_ClassesDocente_ClasseDocenteId",
-                        column: x => x.ClasseDocenteId,
-                        principalTable: "ClassesDocente",
-                        principalColumn: "ClasseDocenteId",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
                         name: "FK_VinculosInstitucionais_Instituicoes_InstituicaoId",
                         column: x => x.InstituicaoId,
                         principalTable: "Instituicoes",
                         principalColumn: "TipoVinculoId",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_VinculosInstitucionais_Niveis_NivelId",
+                        column: x => x.NivelId,
+                        principalTable: "Niveis",
+                        principalColumn: "NivelId",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_VinculosInstitucionais_TiposVinculo_TipoVinculoId",
@@ -558,14 +542,14 @@ namespace ProgressoAcademico.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_VinculosInstitucionais_ClasseDocenteId",
-                table: "VinculosInstitucionais",
-                column: "ClasseDocenteId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_VinculosInstitucionais_InstituicaoId",
                 table: "VinculosInstitucionais",
                 column: "InstituicaoId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_VinculosInstitucionais_NivelId",
+                table: "VinculosInstitucionais",
+                column: "NivelId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_VinculosInstitucionais_TipoVinculoId",
@@ -602,9 +586,6 @@ namespace ProgressoAcademico.Migrations
 
             migrationBuilder.DropTable(
                 name: "TiposDocumento");
-
-            migrationBuilder.DropTable(
-                name: "ClassesDocente");
 
             migrationBuilder.DropTable(
                 name: "Instituicoes");

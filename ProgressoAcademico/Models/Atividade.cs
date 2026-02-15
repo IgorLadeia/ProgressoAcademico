@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ProgressoAcademico.Models;
 
-public class LoginViewModel
+public class Atividade
 {
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]

@@ -13,6 +13,6 @@ public class AtividadeAdministrativa
     [MaxLength(100)]
     public string? Unidade { get; set; }
 
-    public LoginViewModel? Atividade { get; set; }
+    public Atividade? Atividade { get; set; }
 
 }

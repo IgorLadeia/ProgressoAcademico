@@ -27,7 +27,7 @@ namespace ProgressoAcademico.Models
         public int? AtividadeId { get; set; }
 
         [ForeignKey(nameof(AtividadeId))]
-        public LoginViewModel Atividade { get; set; }
+        public Atividade Atividade { get; set; }
 
         public byte[] Arquivo { get; set; }
 

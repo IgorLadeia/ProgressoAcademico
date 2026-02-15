@@ -18,14 +18,11 @@ namespace ProgressoAcademico.Context
         public DbSet<UsuarioPerfil> UsuariosPerfis { get; set; }
         public DbSet<VinculoInstitucional> VinculosInstitucionais { get; set; }
         public DbSet<TipoVinculo> TiposVinculo { get; set; }
-        public DbSet<ClasseDocente> ClassesDocente { get; set; }
-
         public DbSet<SolicitacaoProgressao> SolicitacoesProgressao { get; set; }
         public DbSet<StatusSolicitacao> StatusSolicitacoes { get; set; }
         public DbSet<TipoProgresso> TiposProgresso { get; set; }
         public DbSet<Nivel> Niveis { get; set; }
-
-        public DbSet<LoginViewModel> Atividades { get; set; }
+        public DbSet<Atividade> Atividades { get; set; }
         public DbSet<TipoAtividade> TiposAtividade { get; set; }
         public DbSet<SubTipoAtividade> SubtiposAtividade { get; set; }
         public DbSet<AtividadeEnsino> AtividadesEnsino { get; set; }
@@ -65,22 +62,22 @@ namespace ProgressoAcademico.Context
             /* ==========================
                ATIVIDADE ↔ ESPECIALIZAÇÕES (1:1)
                ========================== */
-            modelBuilder.Entity<LoginViewModel>()
+            modelBuilder.Entity<Atividade>()
                 .HasOne(a => a.AtividadeEnsino)
                 .WithOne(e => e.Atividade)
                 .HasForeignKey<AtividadeEnsino>(e => e.AtividadeId);
 
-            modelBuilder.Entity<LoginViewModel>()
+            modelBuilder.Entity<Atividade>()
                 .HasOne(a => a.AtividadePesquisa)
                 .WithOne(p => p.Atividade)
                 .HasForeignKey<AtividadePesquisa>(p => p.AtividadeId);
 
-            modelBuilder.Entity<LoginViewModel>()
+            modelBuilder.Entity<Atividade>()
                 .HasOne(a => a.AtividadeExtensao)
                 .WithOne(x => x.Atividade)
                 .HasForeignKey<AtividadeExtensao>(x => x.AtividadeId);
 
-            modelBuilder.Entity<LoginViewModel>()
+            modelBuilder.Entity<Atividade>()
                 .HasOne(a => a.AtividadeAdministrativa)
                 .WithOne(ad => ad.Atividade)
                 .HasForeignKey<AtividadeAdministrativa>(ad => ad.AtividadeId);
@@ -134,9 +131,9 @@ namespace ProgressoAcademico.Context
                 .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<VinculoInstitucional>()
-                .HasOne(v => v.ClasseDocente)
-                .WithMany(c => c.VinculosInstitucionais)
-                .HasForeignKey(v => v.ClasseDocenteId)
+                .HasOne(v => v.Nivel)
+                .WithMany(c => c.VinculoInstitucionals)
+                .HasForeignKey(v => v.NivelId)
                 .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<Documento>()

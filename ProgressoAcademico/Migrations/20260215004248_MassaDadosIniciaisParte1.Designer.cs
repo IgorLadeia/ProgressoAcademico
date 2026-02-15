@@ -11,8 +11,8 @@ using ProgressoAcademico.Context;
 namespace ProgressoAcademico.Migrations
 {
     [DbContext(typeof(ProgressoAcademicoDbContext))]
-    [Migration("20260111201608_MigracaoInicial")]
-    partial class MigracaoInicial
+    [Migration("20260215004248_MassaDadosIniciaisParte1")]
+    partial class MassaDadosIniciaisParte1
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -194,25 +194,6 @@ namespace ProgressoAcademico.Migrations
                     b.HasIndex("TipoAtividadeId");
 
                     b.ToTable("Atividades");
-                });
-
-            modelBuilder.Entity("ProgressoAcademico.Models.ClasseDocente", b =>
-                {
-                    b.Property<int>("ClasseDocenteId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    b.Property<int>("NivelHierarquico")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Nome")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("varchar(100)");
-
-                    b.HasKey("ClasseDocenteId");
-
-                    b.ToTable("ClassesDocente");
                 });
 
             modelBuilder.Entity("ProgressoAcademico.Models.Documento", b =>
@@ -438,9 +419,6 @@ namespace ProgressoAcademico.Migrations
                     b.Property<bool>("Ativo")
                         .HasColumnType("tinyint(1)");
 
-                    b.Property<int>("ClasseDocenteId")
-                        .HasColumnType("int");
-
                     b.Property<DateTime>("DataIngressoInstituicao")
                         .HasColumnType("datetime(6)");
 
@@ -450,14 +428,17 @@ namespace ProgressoAcademico.Migrations
                     b.Property<int>("InstituicaoId")
                         .HasColumnType("int");
 
+                    b.Property<int>("NivelId")
+                        .HasColumnType("int");
+
                     b.Property<int>("TipoVinculoId")
                         .HasColumnType("int");
 
                     b.HasKey("UsuarioId");
 
-                    b.HasIndex("ClasseDocenteId");
-
                     b.HasIndex("InstituicaoId");
+
+                    b.HasIndex("NivelId");
 
                     b.HasIndex("TipoVinculoId");
 
@@ -692,15 +673,15 @@ namespace ProgressoAcademico.Migrations
 
             modelBuilder.Entity("ProgressoAcademico.Models.VinculoInstitucional", b =>
                 {
-                    b.HasOne("ProgressoAcademico.Models.ClasseDocente", "ClasseDocente")
-                        .WithMany("VinculosInstitucionais")
-                        .HasForeignKey("ClasseDocenteId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
                     b.HasOne("Instituicao", "Instituicao")
                         .WithMany("Vinculos")
                         .HasForeignKey("InstituicaoId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("ProgressoAcademico.Models.Nivel", "Nivel")
+                        .WithMany("VinculoInstitucionals")
+                        .HasForeignKey("NivelId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
@@ -716,9 +697,9 @@ namespace ProgressoAcademico.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("ClasseDocente");
-
                     b.Navigation("Instituicao");
+
+                    b.Navigation("Nivel");
 
                     b.Navigation("TipoVinculo");
 
@@ -758,16 +739,13 @@ namespace ProgressoAcademico.Migrations
                     b.Navigation("Documentos");
                 });
 
-            modelBuilder.Entity("ProgressoAcademico.Models.ClasseDocente", b =>
-                {
-                    b.Navigation("VinculosInstitucionais");
-                });
-
             modelBuilder.Entity("ProgressoAcademico.Models.Nivel", b =>
                 {
                     b.Navigation("SolicitacoesComoDestino");
 
                     b.Navigation("SolicitacoesComoOrigem");
+
+                    b.Navigation("VinculoInstitucionals");
                 });
 
             modelBuilder.Entity("ProgressoAcademico.Models.SolicitacaoProgressao", b =>
