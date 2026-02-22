@@ -35,6 +35,7 @@ namespace ProgressoAcademico.Context
 
         public DbSet<Instituicao> Instituicoes { get; set; }
 
+
         /* ==========================
            CONFIGURAÇÕES
            ========================== */
@@ -52,12 +53,13 @@ namespace ProgressoAcademico.Context
                 .HasForeignKey<UsuarioPerfil>(p => p.UsuarioId);
 
             /* ==========================
-               USUARIO ↔ VINCULO INSTITUCIONAL (1:1, PK = FK)
+               USUARIO ↔ VINCULO INSTITUCIONAL (1:N)
                ========================== */
             modelBuilder.Entity<Usuario>()
-                .HasOne(u => u.VinculoInstitucional)
+                .HasMany(u => u.VinculosInstitucionais)
                 .WithOne(v => v.Usuario)
-                .HasForeignKey<VinculoInstitucional>(v => v.UsuarioId);
+                .HasForeignKey(v => v.UsuarioId)
+                .OnDelete(DeleteBehavior.Cascade);
 
             /* ==========================
                ATIVIDADE ↔ ESPECIALIZAÇÕES (1:1)

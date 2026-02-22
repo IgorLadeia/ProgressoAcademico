@@ -6,8 +6,13 @@ namespace ProgressoAcademico.Models
 {
     public class VinculoInstitucional
     {
-        // 🔑 PK + FK (1:1 com Usuario)
+        // 🔑 PK própria da entidade
         [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public int VinculoInstitucionalId { get; set; }
+
+        // 👤 Usuario (1:N)
+        [Required]
         public int UsuarioId { get; set; }
 
         [ForeignKey(nameof(UsuarioId))]

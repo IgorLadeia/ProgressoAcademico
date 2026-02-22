@@ -111,209 +111,235 @@ namespace ProgressoAcademico.Migrations
 
             mb.Sql(@"
 
-                    INSERT INTO SubTiposAtividade (TipoAtividadeId, Nome, Descricao)
-                    SELECT ta.TipoAtividadeId, 'Aula em Graduação', 'Ministração de disciplina em curso de graduação.'
+                    INSERT INTO SubTiposAtividade (TipoAtividadeId, Nome, Descricao, Pontos)
+                    SELECT ta.TipoAtividadeId, 'Aula em Graduação',
+                    'Ministração de disciplina em curso de graduação.', 10
                     FROM TiposAtividade ta
                     WHERE ta.Nome = 'Ensino'
-                    AND NOT EXISTS (
-                        SELECT 1 FROM SubTiposAtividade s WHERE s.Nome = 'Aula em Graduação'
-                    );
+                    AND NOT EXISTS (SELECT 1 FROM SubTiposAtividade s WHERE s.Nome = 'Aula em Graduação');
 
-                    INSERT INTO SubTiposAtividade (TipoAtividadeId, Nome, Descricao)
-                    SELECT ta.TipoAtividadeId, 'Aula em Pós-Graduação', 'Ministração de disciplina em mestrado ou doutorado.'
+                    INSERT INTO SubTiposAtividade (TipoAtividadeId, Nome, Descricao, Pontos)
+                    SELECT ta.TipoAtividadeId, 'Aula em Pós-Graduação',
+                    'Ministração de disciplina em mestrado ou doutorado.', 15
                     FROM TiposAtividade ta
                     WHERE ta.Nome = 'Ensino'
-                    AND NOT EXISTS (
-                        SELECT 1 FROM SubTiposAtividade s WHERE s.Nome = 'Aula em Pós-Graduação'
-                    );
+                    AND NOT EXISTS (SELECT 1 FROM SubTiposAtividade s WHERE s.Nome = 'Aula em Pós-Graduação');
 
-                    INSERT INTO SubTiposAtividade (TipoAtividadeId, Nome, Descricao)
-                    SELECT ta.TipoAtividadeId, 'Orientação de TCC', 'Orientação de Trabalho de Conclusão de Curso.'
+                    INSERT INTO SubTiposAtividade (TipoAtividadeId, Nome, Descricao, Pontos)
+                    SELECT ta.TipoAtividadeId, 'Orientação de TCC',
+                    'Orientação de Trabalho de Conclusão de Curso.', 8
                     FROM TiposAtividade ta
                     WHERE ta.Nome = 'Ensino'
-                    AND NOT EXISTS (
-                        SELECT 1 FROM SubTiposAtividade s WHERE s.Nome = 'Orientação de TCC'
-                    );
+                    AND NOT EXISTS (SELECT 1 FROM SubTiposAtividade s WHERE s.Nome = 'Orientação de TCC');
 
-                    INSERT INTO SubTiposAtividade (TipoAtividadeId, Nome, Descricao)
-                    SELECT ta.TipoAtividadeId, 'Orientação de Mestrado', 'Orientação de dissertação de mestrado.'
+                    INSERT INTO SubTiposAtividade (TipoAtividadeId, Nome, Descricao, Pontos)
+                    SELECT ta.TipoAtividadeId, 'Orientação de Mestrado',
+                    'Orientação de dissertação de mestrado.', 20
                     FROM TiposAtividade ta
                     WHERE ta.Nome = 'Ensino'
-                    AND NOT EXISTS (
-                        SELECT 1 FROM SubTiposAtividade s WHERE s.Nome = 'Orientação de Mestrado'
-                    );
+                    AND NOT EXISTS (SELECT 1 FROM SubTiposAtividade s WHERE s.Nome = 'Orientação de Mestrado');
 
-                    INSERT INTO SubTiposAtividade (TipoAtividadeId, Nome, Descricao)
-                    SELECT ta.TipoAtividadeId, 'Orientação de Doutorado', 'Orientação de tese de doutorado.'
+                    INSERT INTO SubTiposAtividade (TipoAtividadeId, Nome, Descricao, Pontos)
+                    SELECT ta.TipoAtividadeId, 'Orientação de Doutorado',
+                    'Orientação de tese de doutorado.', 30
                     FROM TiposAtividade ta
                     WHERE ta.Nome = 'Ensino'
-                    AND NOT EXISTS (
-                        SELECT 1 FROM SubTiposAtividade s WHERE s.Nome = 'Orientação de Doutorado'
-                    );
+                    AND NOT EXISTS (SELECT 1 FROM SubTiposAtividade s WHERE s.Nome = 'Orientação de Doutorado');
 
-                    INSERT INTO SubTiposAtividade (TipoAtividadeId, Nome, Descricao)
-                    SELECT ta.TipoAtividadeId, 'Participação em Banca', 'Participação em banca examinadora.'
+                    INSERT INTO SubTiposAtividade (TipoAtividadeId, Nome, Descricao, Pontos)
+                    SELECT ta.TipoAtividadeId, 'Participação em Banca',
+                    'Participação em banca examinadora.', 5
                     FROM TiposAtividade ta
                     WHERE ta.Nome = 'Ensino'
-                    AND NOT EXISTS (
-                        SELECT 1 FROM SubTiposAtividade s WHERE s.Nome = 'Participação em Banca'
-                    );
+                    AND NOT EXISTS (SELECT 1 FROM SubTiposAtividade s WHERE s.Nome = 'Participação em Banca');
 
-                    INSERT INTO SubTiposAtividade (TipoAtividadeId, Nome, Descricao)
-                    SELECT ta.TipoAtividadeId, 'Supervisão de Estágio', 'Supervisão de estágio curricular.'
+                    INSERT INTO SubTiposAtividade (TipoAtividadeId, Nome, Descricao, Pontos)
+                    SELECT ta.TipoAtividadeId, 'Supervisão de Estágio',
+                    'Supervisão de estágio curricular.', 6
                     FROM TiposAtividade ta
                     WHERE ta.Nome = 'Ensino'
-                    AND NOT EXISTS (
-                        SELECT 1 FROM SubTiposAtividade s WHERE s.Nome = 'Supervisão de Estágio'
-                    );
+                    AND NOT EXISTS (SELECT 1 FROM SubTiposAtividade s WHERE s.Nome = 'Supervisão de Estágio');
 
-                    INSERT INTO SubTiposAtividade (TipoAtividadeId, Nome, Descricao)
-                    SELECT ta.TipoAtividadeId, 'Coordenação de Disciplina', 'Responsável pela organização da disciplina.'
+                    INSERT INTO SubTiposAtividade (TipoAtividadeId, Nome, Descricao, Pontos)
+                    SELECT ta.TipoAtividadeId, 'Coordenação de Disciplina',
+                    'Responsável pela organização da disciplina.', 12
                     FROM TiposAtividade ta
                     WHERE ta.Nome = 'Ensino'
-                    AND NOT EXISTS (
-                        SELECT 1 FROM SubTiposAtividade s WHERE s.Nome = 'Coordenação de Disciplina'
-                    ); ");
+                    AND NOT EXISTS (SELECT 1 FROM SubTiposAtividade s WHERE s.Nome = 'Coordenação de Disciplina');
+
+                    ");
+
 
 
 
             mb.Sql(@"
 
-                    INSERT INTO SubTiposAtividade (TipoAtividadeId, Nome, Descricao)
-                    SELECT ta.TipoAtividadeId, 'Artigo Científico Publicado', 'Publicação de artigo em periódico científico.'
+                    INSERT INTO SubTiposAtividade (TipoAtividadeId, Nome, Descricao, Pontos)
+                    SELECT ta.TipoAtividadeId, 'Artigo Científico Publicado',
+                    'Publicação de artigo em periódico científico.', 25
                     FROM TiposAtividade ta
                     WHERE ta.Nome = 'Pesquisa'
                     AND NOT EXISTS (SELECT 1 FROM SubTiposAtividade s WHERE s.Nome = 'Artigo Científico Publicado');
 
-                    INSERT INTO SubTiposAtividade (TipoAtividadeId, Nome, Descricao)
-                    SELECT ta.TipoAtividadeId, 'Livro Publicado', 'Publicação de livro acadêmico.'
+                    INSERT INTO SubTiposAtividade (TipoAtividadeId, Nome, Descricao, Pontos)
+                    SELECT ta.TipoAtividadeId, 'Livro Publicado',
+                    'Publicação de livro acadêmico.', 40
                     FROM TiposAtividade ta
                     WHERE ta.Nome = 'Pesquisa'
                     AND NOT EXISTS (SELECT 1 FROM SubTiposAtividade s WHERE s.Nome = 'Livro Publicado');
 
-                    INSERT INTO SubTiposAtividade (TipoAtividadeId, Nome, Descricao)
-                    SELECT ta.TipoAtividadeId, 'Capítulo de Livro', 'Publicação de capítulo em livro.'
+                    INSERT INTO SubTiposAtividade (TipoAtividadeId, Nome, Descricao, Pontos)
+                    SELECT ta.TipoAtividadeId, 'Capítulo de Livro',
+                    'Publicação de capítulo em livro.', 18
                     FROM TiposAtividade ta
                     WHERE ta.Nome = 'Pesquisa'
                     AND NOT EXISTS (SELECT 1 FROM SubTiposAtividade s WHERE s.Nome = 'Capítulo de Livro');
 
-                    INSERT INTO SubTiposAtividade (TipoAtividadeId, Nome, Descricao)
-                    SELECT ta.TipoAtividadeId, 'Trabalho em Congresso', 'Publicação em anais de evento científico.'
+                    INSERT INTO SubTiposAtividade (TipoAtividadeId, Nome, Descricao, Pontos)
+                    SELECT ta.TipoAtividadeId, 'Trabalho em Congresso',
+                    'Publicação em anais de evento científico.', 12
                     FROM TiposAtividade ta
                     WHERE ta.Nome = 'Pesquisa'
                     AND NOT EXISTS (SELECT 1 FROM SubTiposAtividade s WHERE s.Nome = 'Trabalho em Congresso');
 
-                    INSERT INTO SubTiposAtividade (TipoAtividadeId, Nome, Descricao)
-                    SELECT ta.TipoAtividadeId, 'Coordenação de Projeto de Pesquisa', 'Coordenação de projeto aprovado.'
+                    INSERT INTO SubTiposAtividade (TipoAtividadeId, Nome, Descricao, Pontos)
+                    SELECT ta.TipoAtividadeId, 'Coordenação de Projeto de Pesquisa',
+                    'Coordenação de projeto aprovado.', 35
                     FROM TiposAtividade ta
                     WHERE ta.Nome = 'Pesquisa'
                     AND NOT EXISTS (SELECT 1 FROM SubTiposAtividade s WHERE s.Nome = 'Coordenação de Projeto de Pesquisa');
 
-                    INSERT INTO SubTiposAtividade (TipoAtividadeId, Nome, Descricao)
-                    SELECT ta.TipoAtividadeId, 'Participação em Projeto de Pesquisa', 'Participação em projeto de pesquisa.'
+                    INSERT INTO SubTiposAtividade (TipoAtividadeId, Nome, Descricao, Pontos)
+                    SELECT ta.TipoAtividadeId, 'Participação em Projeto de Pesquisa',
+                    'Participação em projeto de pesquisa.', 15
                     FROM TiposAtividade ta
                     WHERE ta.Nome = 'Pesquisa'
                     AND NOT EXISTS (SELECT 1 FROM SubTiposAtividade s WHERE s.Nome = 'Participação em Projeto de Pesquisa');
 
-                    INSERT INTO SubTiposAtividade (TipoAtividadeId, Nome, Descricao)
-                    SELECT ta.TipoAtividadeId, 'Registro de Patente', 'Depósito ou concessão de patente.'
+                    INSERT INTO SubTiposAtividade (TipoAtividadeId, Nome, Descricao, Pontos)
+                    SELECT ta.TipoAtividadeId, 'Registro de Patente',
+                    'Depósito ou concessão de patente.', 50
                     FROM TiposAtividade ta
                     WHERE ta.Nome = 'Pesquisa'
                     AND NOT EXISTS (SELECT 1 FROM SubTiposAtividade s WHERE s.Nome = 'Registro de Patente');
 
-                    INSERT INTO SubTiposAtividade (TipoAtividadeId, Nome, Descricao)
-                    SELECT ta.TipoAtividadeId, 'Liderança de Grupo de Pesquisa', 'Atuação como líder de grupo certificado.'
+                    INSERT INTO SubTiposAtividade (TipoAtividadeId, Nome, Descricao, Pontos)
+                    SELECT ta.TipoAtividadeId, 'Liderança de Grupo de Pesquisa',
+                    'Atuação como líder de grupo certificado.', 28
                     FROM TiposAtividade ta
                     WHERE ta.Nome = 'Pesquisa'
-                    AND NOT EXISTS (SELECT 1 FROM SubTiposAtividade s WHERE s.Nome = 'Liderança de Grupo de Pesquisa'); ");
+                    AND NOT EXISTS (SELECT 1 FROM SubTiposAtividade s WHERE s.Nome = 'Liderança de Grupo de Pesquisa');
+
+                    ");
+
 
             mb.Sql(@"
 
-                    INSERT INTO SubTiposAtividade (TipoAtividadeId, Nome, Descricao)
-                    SELECT ta.TipoAtividadeId, 'Coordenação de Projeto de Extensão', 'Coordenação de ação extensionista.'
+                    INSERT INTO SubTiposAtividade (TipoAtividadeId, Nome, Descricao, Pontos)
+                    SELECT ta.TipoAtividadeId, 'Coordenação de Projeto de Extensão',
+                    'Coordenação de ação extensionista.', 25
                     FROM TiposAtividade ta
                     WHERE ta.Nome = 'Extensão'
                     AND NOT EXISTS (SELECT 1 FROM SubTiposAtividade s WHERE s.Nome = 'Coordenação de Projeto de Extensão');
 
-                    INSERT INTO SubTiposAtividade (TipoAtividadeId, Nome, Descricao)
-                    SELECT ta.TipoAtividadeId, 'Participação em Projeto de Extensão', 'Participação em projeto de extensão.'
+                    INSERT INTO SubTiposAtividade (TipoAtividadeId, Nome, Descricao, Pontos)
+                    SELECT ta.TipoAtividadeId, 'Participação em Projeto de Extensão',
+                    'Participação em projeto de extensão.', 12
                     FROM TiposAtividade ta
                     WHERE ta.Nome = 'Extensão'
                     AND NOT EXISTS (SELECT 1 FROM SubTiposAtividade s WHERE s.Nome = 'Participação em Projeto de Extensão');
 
-                    INSERT INTO SubTiposAtividade (TipoAtividadeId, Nome, Descricao)
-                    SELECT ta.TipoAtividadeId, 'Curso de Extensão', 'Ministração de curso para comunidade.'
+                    INSERT INTO SubTiposAtividade (TipoAtividadeId, Nome, Descricao, Pontos)
+                    SELECT ta.TipoAtividadeId, 'Curso de Extensão',
+                    'Ministração de curso para comunidade.', 15
                     FROM TiposAtividade ta
                     WHERE ta.Nome = 'Extensão'
                     AND NOT EXISTS (SELECT 1 FROM SubTiposAtividade s WHERE s.Nome = 'Curso de Extensão');
 
-                    INSERT INTO SubTiposAtividade (TipoAtividadeId, Nome, Descricao)
-                    SELECT ta.TipoAtividadeId, 'Palestra ou Workshop', 'Realização de palestra ou oficina.'
+                    INSERT INTO SubTiposAtividade (TipoAtividadeId, Nome, Descricao, Pontos)
+                    SELECT ta.TipoAtividadeId, 'Palestra ou Workshop',
+                    'Realização de palestra ou oficina.', 10
                     FROM TiposAtividade ta
                     WHERE ta.Nome = 'Extensão'
                     AND NOT EXISTS (SELECT 1 FROM SubTiposAtividade s WHERE s.Nome = 'Palestra ou Workshop');
 
-                    INSERT INTO SubTiposAtividade (TipoAtividadeId, Nome, Descricao)
-                    SELECT ta.TipoAtividadeId, 'Organização de Evento', 'Organização de evento extensionista.'
+                    INSERT INTO SubTiposAtividade (TipoAtividadeId, Nome, Descricao, Pontos)
+                    SELECT ta.TipoAtividadeId, 'Organização de Evento',
+                    'Organização de evento extensionista.', 18
                     FROM TiposAtividade ta
                     WHERE ta.Nome = 'Extensão'
                     AND NOT EXISTS (SELECT 1 FROM SubTiposAtividade s WHERE s.Nome = 'Organização de Evento');
 
-                    INSERT INTO SubTiposAtividade (TipoAtividadeId, Nome, Descricao)
-                    SELECT ta.TipoAtividadeId, 'Programa Institucional de Extensão', 'Atuação em programa permanente.'
+                    INSERT INTO SubTiposAtividade (TipoAtividadeId, Nome, Descricao, Pontos)
+                    SELECT ta.TipoAtividadeId, 'Programa Institucional de Extensão',
+                    'Atuação em programa permanente.', 22
                     FROM TiposAtividade ta
                     WHERE ta.Nome = 'Extensão'
-                    AND NOT EXISTS (SELECT 1 FROM SubTiposAtividade s WHERE s.Nome = 'Programa Institucional de Extensão'); ");
+                    AND NOT EXISTS (SELECT 1 FROM SubTiposAtividade s WHERE s.Nome = 'Programa Institucional de Extensão');
+
+                    ");
+
 
             mb.Sql(@"
 
-                    INSERT INTO SubTiposAtividade (TipoAtividadeId, Nome, Descricao)
-                    SELECT ta.TipoAtividadeId, 'Reitor', 'Cargo máximo da instituição.'
+                    INSERT INTO SubTiposAtividade (TipoAtividadeId, Nome, Descricao, Pontos)
+                    SELECT ta.TipoAtividadeId, 'Reitor',
+                    'Cargo máximo da instituição.', 100
                     FROM TiposAtividade ta
                     WHERE ta.Nome = 'Gestão'
                     AND NOT EXISTS (SELECT 1 FROM SubTiposAtividade s WHERE s.Nome = 'Reitor');
 
-                    INSERT INTO SubTiposAtividade (TipoAtividadeId, Nome, Descricao)
-                    SELECT ta.TipoAtividadeId, 'Vice-Reitor', 'Substituto imediato do reitor.'
+                    INSERT INTO SubTiposAtividade (TipoAtividadeId, Nome, Descricao, Pontos)
+                    SELECT ta.TipoAtividadeId, 'Vice-Reitor',
+                    'Substituto imediato do reitor.', 80
                     FROM TiposAtividade ta
                     WHERE ta.Nome = 'Gestão'
                     AND NOT EXISTS (SELECT 1 FROM SubTiposAtividade s WHERE s.Nome = 'Vice-Reitor');
 
-                    INSERT INTO SubTiposAtividade (TipoAtividadeId, Nome, Descricao)
-                    SELECT ta.TipoAtividadeId, 'Pró-Reitor', 'Gestor de área estratégica.'
+                    INSERT INTO SubTiposAtividade (TipoAtividadeId, Nome, Descricao, Pontos)
+                    SELECT ta.TipoAtividadeId, 'Pró-Reitor',
+                    'Gestor de área estratégica.', 70
                     FROM TiposAtividade ta
                     WHERE ta.Nome = 'Gestão'
                     AND NOT EXISTS (SELECT 1 FROM SubTiposAtividade s WHERE s.Nome = 'Pró-Reitor');
 
-                    INSERT INTO SubTiposAtividade (TipoAtividadeId, Nome, Descricao)
-                    SELECT ta.TipoAtividadeId, 'Diretor de Unidade', 'Direção de centro ou faculdade.'
+                    INSERT INTO SubTiposAtividade (TipoAtividadeId, Nome, Descricao, Pontos)
+                    SELECT ta.TipoAtividadeId, 'Diretor de Unidade',
+                    'Direção de centro ou faculdade.', 60
                     FROM TiposAtividade ta
                     WHERE ta.Nome = 'Gestão'
                     AND NOT EXISTS (SELECT 1 FROM SubTiposAtividade s WHERE s.Nome = 'Diretor de Unidade');
 
-                    INSERT INTO SubTiposAtividade (TipoAtividadeId, Nome, Descricao)
-                    SELECT ta.TipoAtividadeId, 'Chefe de Departamento', 'Responsável por departamento acadêmico.'
+                    INSERT INTO SubTiposAtividade (TipoAtividadeId, Nome, Descricao, Pontos)
+                    SELECT ta.TipoAtividadeId, 'Chefe de Departamento',
+                    'Responsável por departamento acadêmico.', 50
                     FROM TiposAtividade ta
                     WHERE ta.Nome = 'Gestão'
                     AND NOT EXISTS (SELECT 1 FROM SubTiposAtividade s WHERE s.Nome = 'Chefe de Departamento');
 
-                    INSERT INTO SubTiposAtividade (TipoAtividadeId, Nome, Descricao)
-                    SELECT ta.TipoAtividadeId, 'Coordenador de Curso', 'Coordenação de curso de graduação ou pós.'
+                    INSERT INTO SubTiposAtividade (TipoAtividadeId, Nome, Descricao, Pontos)
+                    SELECT ta.TipoAtividadeId, 'Coordenador de Curso',
+                    'Coordenação de curso de graduação ou pós.', 40
                     FROM TiposAtividade ta
                     WHERE ta.Nome = 'Gestão'
                     AND NOT EXISTS (SELECT 1 FROM SubTiposAtividade s WHERE s.Nome = 'Coordenador de Curso');
 
-                    INSERT INTO SubTiposAtividade (TipoAtividadeId, Nome, Descricao)
-                    SELECT ta.TipoAtividadeId, 'Participação em Conselho', 'Membro de conselho universitário.'
+                    INSERT INTO SubTiposAtividade (TipoAtividadeId, Nome, Descricao, Pontos)
+                    SELECT ta.TipoAtividadeId, 'Participação em Conselho',
+                    'Membro de conselho universitário.', 15
                     FROM TiposAtividade ta
                     WHERE ta.Nome = 'Gestão'
                     AND NOT EXISTS (SELECT 1 FROM SubTiposAtividade s WHERE s.Nome = 'Participação em Conselho');
 
-                    INSERT INTO SubTiposAtividade (TipoAtividadeId, Nome, Descricao)
-                    SELECT ta.TipoAtividadeId, 'Participação em Comissão', 'Atuação em comissão institucional.'
+                    INSERT INTO SubTiposAtividade (TipoAtividadeId, Nome, Descricao, Pontos)
+                    SELECT ta.TipoAtividadeId, 'Participação em Comissão',
+                    'Atuação em comissão institucional.', 12
                     FROM TiposAtividade ta
                     WHERE ta.Nome = 'Gestão'
-                    AND NOT EXISTS (SELECT 1 FROM SubTiposAtividade s WHERE s.Nome = 'Participação em Comissão'); ");
+                    AND NOT EXISTS (SELECT 1 FROM SubTiposAtividade s WHERE s.Nome = 'Participação em Comissão');
+
+                    ");
+
 
             mb.Sql("INSERT INTO TiposVinculo (Nome) " +
                         "VALUES ('Professor Efetivo - 20h'), " +

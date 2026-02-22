@@ -11,8 +11,8 @@ using ProgressoAcademico.Context;
 namespace ProgressoAcademico.Migrations
 {
     [DbContext(typeof(ProgressoAcademicoDbContext))]
-    [Migration("20260215004248_MassaDadosIniciaisParte1")]
-    partial class MassaDadosIniciaisParte1
+    [Migration("20260216021753_InitialSchema")]
+    partial class InitialSchema
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -126,7 +126,7 @@ namespace ProgressoAcademico.Migrations
 
             modelBuilder.Entity("Instituicao", b =>
                 {
-                    b.Property<int>("TipoVinculoId")
+                    b.Property<int>("InstituicaoId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
@@ -140,7 +140,7 @@ namespace ProgressoAcademico.Migrations
                         .HasMaxLength(20)
                         .HasColumnType("varchar(20)");
 
-                    b.HasKey("TipoVinculoId");
+                    b.HasKey("InstituicaoId");
 
                     b.ToTable("Instituicoes");
                 });
@@ -402,9 +402,9 @@ namespace ProgressoAcademico.Migrations
                         .HasMaxLength(200)
                         .HasColumnType("varchar(200)");
 
-                    b.Property<byte[]>("FotoPerfil")
+                    b.Property<string>("FotoPerfil")
                         .IsRequired()
-                        .HasColumnType("longblob");
+                        .HasColumnType("longtext");
 
                     b.HasKey("UsuarioId");
 
@@ -413,7 +413,8 @@ namespace ProgressoAcademico.Migrations
 
             modelBuilder.Entity("ProgressoAcademico.Models.VinculoInstitucional", b =>
                 {
-                    b.Property<int>("UsuarioId")
+                    b.Property<int>("VinculoInstitucionalId")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
                     b.Property<bool>("Ativo")
@@ -434,13 +435,18 @@ namespace ProgressoAcademico.Migrations
                     b.Property<int>("TipoVinculoId")
                         .HasColumnType("int");
 
-                    b.HasKey("UsuarioId");
+                    b.Property<int>("UsuarioId")
+                        .HasColumnType("int");
+
+                    b.HasKey("VinculoInstitucionalId");
 
                     b.HasIndex("InstituicaoId");
 
                     b.HasIndex("NivelId");
 
                     b.HasIndex("TipoVinculoId");
+
+                    b.HasIndex("UsuarioId");
 
                     b.ToTable("VinculosInstitucionais");
                 });
@@ -458,6 +464,9 @@ namespace ProgressoAcademico.Migrations
                         .IsRequired()
                         .HasMaxLength(150)
                         .HasColumnType("varchar(150)");
+
+                    b.Property<int>("Pontos")
+                        .HasColumnType("int");
 
                     b.Property<int>("TipoAtividadeId")
                         .HasColumnType("int");
@@ -692,8 +701,8 @@ namespace ProgressoAcademico.Migrations
                         .IsRequired();
 
                     b.HasOne("ProgressoAcademico.Models.Usuario", "Usuario")
-                        .WithOne("VinculoInstitucional")
-                        .HasForeignKey("ProgressoAcademico.Models.VinculoInstitucional", "UsuarioId")
+                        .WithMany("VinculosInstitucionais")
+                        .HasForeignKey("UsuarioId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -772,8 +781,7 @@ namespace ProgressoAcademico.Migrations
                     b.Navigation("UsuarioPerfil")
                         .IsRequired();
 
-                    b.Navigation("VinculoInstitucional")
-                        .IsRequired();
+                    b.Navigation("VinculosInstitucionais");
                 });
 
             modelBuilder.Entity("TipoAtividade", b =>

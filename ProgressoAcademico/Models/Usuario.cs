@@ -31,8 +31,8 @@ namespace ProgressoAcademico.Models
         // 🔗 1:1 — um usuário possui exatamente um perfil
         public UsuarioPerfil UsuarioPerfil { get; set; }
 
-        // 🔗 1:1 — um usuário possui exatamente um perfil
-        public VinculoInstitucional VinculoInstitucional { get; set; }
+        // 🔗 1:n — um usuário pode possuir vários vínculos institucionais
+        public ICollection<VinculoInstitucional> VinculosInstitucionais { get; set; }
 
         public ICollection<SolicitacaoProgressao> SolicitacaoProgressao { get; set; }
     }

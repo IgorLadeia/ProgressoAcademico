@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace ProgressoAcademico.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCreate : Migration
+    public partial class InitialSchema : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -19,7 +19,7 @@ namespace ProgressoAcademico.Migrations
                 name: "Instituicoes",
                 columns: table => new
                 {
-                    TipoVinculoId = table.Column<int>(type: "int", nullable: false)
+                    InstituicaoId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     Nome = table.Column<string>(type: "varchar(200)", maxLength: 200, nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
@@ -28,7 +28,7 @@ namespace ProgressoAcademico.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Instituicoes", x => x.TipoVinculoId);
+                    table.PrimaryKey("PK_Instituicoes", x => x.InstituicaoId);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
@@ -164,6 +164,7 @@ namespace ProgressoAcademico.Migrations
                     TipoAtividadeId = table.Column<int>(type: "int", nullable: false),
                     Nome = table.Column<string>(type: "varchar(150)", maxLength: 150, nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
+                    Pontos = table.Column<int>(type: "int", nullable: false),
                     Descricao = table.Column<string>(type: "longtext", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4")
                 },
@@ -242,7 +243,8 @@ namespace ProgressoAcademico.Migrations
                     UsuarioId = table.Column<int>(type: "int", nullable: false),
                     Apelido = table.Column<string>(type: "varchar(200)", maxLength: 200, nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    FotoPerfil = table.Column<byte[]>(type: "longblob", nullable: false)
+                    FotoPerfil = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4")
                 },
                 constraints: table =>
                 {
@@ -260,6 +262,8 @@ namespace ProgressoAcademico.Migrations
                 name: "VinculosInstitucionais",
                 columns: table => new
                 {
+                    VinculoInstitucionalId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     UsuarioId = table.Column<int>(type: "int", nullable: false),
                     InstituicaoId = table.Column<int>(type: "int", nullable: false),
                     TipoVinculoId = table.Column<int>(type: "int", nullable: false),
@@ -270,12 +274,12 @@ namespace ProgressoAcademico.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_VinculosInstitucionais", x => x.UsuarioId);
+                    table.PrimaryKey("PK_VinculosInstitucionais", x => x.VinculoInstitucionalId);
                     table.ForeignKey(
                         name: "FK_VinculosInstitucionais_Instituicoes_InstituicaoId",
                         column: x => x.InstituicaoId,
                         principalTable: "Instituicoes",
-                        principalColumn: "TipoVinculoId",
+                        principalColumn: "InstituicaoId",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_VinculosInstitucionais_Niveis_NivelId",
@@ -555,6 +559,11 @@ namespace ProgressoAcademico.Migrations
                 name: "IX_VinculosInstitucionais_TipoVinculoId",
                 table: "VinculosInstitucionais",
                 column: "TipoVinculoId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_VinculosInstitucionais_UsuarioId",
+                table: "VinculosInstitucionais",
+                column: "UsuarioId");
         }
 
         /// <inheritdoc />

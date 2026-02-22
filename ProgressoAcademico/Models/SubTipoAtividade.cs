@@ -18,6 +18,8 @@ public class SubTipoAtividade
     [Required, MaxLength(150)]
     public string Nome { get; set; }
 
+    public int Pontos { get; set; }
+
     public string? Descricao { get; set; }
 
     // Ensino, Pesquisa, Extensão, Gestão
