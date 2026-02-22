@@ -385,6 +385,13 @@ namespace ProgressoAcademico.Migrations
                     VALUES ('Universidade Federal do ABC', 'UFABC');
                     ");
 
+            mb.Sql(@"
+                INSERT INTO StatusSolicitacoes (Nome) VALUES
+                ('Em Processamento'),
+                ('Aprovada'),
+                ('Negada'),
+                ('Encerrada');
+            ");
 
         }
 
@@ -462,6 +469,16 @@ namespace ProgressoAcademico.Migrations
             mb.Sql("DELETE FROM Niveis");
 
             mb.Sql("DELETE FROM Instituicoes");
+
+            mb.Sql(@"
+                DELETE FROM StatusSolicitacoes
+                WHERE Nome IN (
+                    'Em Processamento',
+                    'Aprovada',
+                    'Negada',
+                    'Encerrada'
+                );
+            ");
 
 
         }
