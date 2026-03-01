@@ -1,0 +1,118 @@
+@model ProgressoAcademico.ViewModels.RegisterViewModel
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/pages/login.css" asp-append-version="true" />
+}
+
+@{
+    ViewData["Title"] = "Cadastrar-se";
+}
+
+<div class="page-bg">
+    <div class="login-card">
+        <div class="login-left">
+            <header class="brand">
+                <img src="~/images/ufabc-logo.png" alt="UFABC Logo" class="brand-logo" />
+                <nav class="brand-nav" aria-label="Main navigation">
+                    <a href="/">Home</a>
+                    <a href="#">Sobre</a>
+                    <a href="#">Contato</a>
+                    <a href="/Account/Register" class="active">Cadastrar-se</a>
+                </nav>
+            </header>
+
+            <main class="form-area" role="main" aria-labelledby="register-title">
+                <h1 id="register-title">Cadastrar-se</h1>
+                <p>Crie sua conta UFABC</p>
+
+                <form method="post" asp-action="Register" class="login-form" autocomplete="on">
+                    @Html.AntiForgeryToken()
+
+                    <div class="input-group">
+                        <label for="Nome" class="sr-only">Nome completo</label>
+                        <div class="input-with-icon">
+                            <span class="icon" aria-hidden="true">🧑‍🎓</span>
+                            <input id="Nome" name="Nome" type="text" placeholder="Seu nome completo" value="@Model?.Nome" required />
+                        </div>
+                        @Html.ValidationMessageFor(m => m.Nome, "", new { @class = "field-error" })
+                    </div>
+
+                    <div class="input-group">
+                        <label for="Email" class="sr-only">E-mail</label>
+                        <div class="input-with-icon">
+                            <span class="icon" aria-hidden="true">📧</span>
+                            <input id="Email" name="Email" type="email" placeholder="seu@exemplo.edu.br" value="@Model?.Email" required />
+                        </div>
+                        @Html.ValidationMessageFor(m => m.Email, "", new { @class = "field-error" })
+                    </div>
+
+                    <div class="input-group">
+                        <label for="Senha" class="sr-only">Senha</label>
+                        <div class="input-with-icon input-password">
+                            <span class="icon" aria-hidden="true">🔒</span>
+                            <input id="Senha" name="Senha" type="password" placeholder="Crie uma senha (mín. 6 caracteres)" required />
+                            <button type="button" class="eye-btn js-toggle-password" data-target="#Senha" aria-label="Alternar visibilidade da senha">👁️</button>
+                        </div>
+                        @Html.ValidationMessageFor(m => m.Senha, "", new { @class = "field-error" })
+                    </div>
+
+                    <button class="btn-primary" type="submit">Criar conta</button>
+
+                    <div class="divider"><span>ou</span></div>
+
+                    <p class="register-link">Já possui conta? <a href="/Account/Login">Entrar</a></p>
+
+                    @if (TempData["SuccessMessage"] != null)
+                    {
+                        <div class="validation-summary success" role="status" aria-live="polite">@TempData["SuccessMessage"]</div>
+                    }
+
+                    @if (!ViewData.ModelState.IsValid)
+                    {
+                        <div class="validation-summary" role="alert" aria-live="polite">
+                            @Html.ValidationSummary()
+                        </div>
+                    }
+
+                </form>
+            </main>
+        </div>
+
+        <aside class="login-right" aria-hidden="false">
+            <div class="right-card">
+                <div class="right-header">
+                    <div class="megaphone" aria-hidden="true">📣</div>
+                    <h3>Boas-vindas</h3>
+                </div>
+
+                <p class="right-sub">Complete seu cadastro para acessar o sistema de progresso acadêmico</p>
+
+                <ul class="tips">
+                    <li>Use seu e-mail institucional quando possível</li>
+                    <li>Senha segura: mínimo 6 caracteres</li>
+                </ul>
+
+                <a class="all-dates" href="#">Saiba mais sobre o processo</a>
+            </div>
+        </aside>
+
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const toggleButtons = document.querySelectorAll('.js-toggle-password');
+        toggleButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const targetId = this.getAttribute('data-target');
+                const input = document.querySelector(targetId);
+                if (input) {
+                    const isPassword = input.type === 'password';
+                    input.type = isPassword ? 'text' : 'password';
+                    this.setAttribute('aria-pressed', !isPassword);
+                    this.textContent = isPassword ? '🙈' : '👁️';
+                }
+            });
+        });
+    });
+</script>

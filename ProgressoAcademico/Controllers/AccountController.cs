@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using ProgressoAcademico.ViewModels;
 
 namespace ProgressoAcademico.Controllers
 {
@@ -13,14 +14,35 @@ namespace ProgressoAcademico.Controllers
         [HttpPost]
         public IActionResult Login(string email, string senha)
         {
-            //  depois você liga com autenticação real
+            //  depois vocï¿½ liga com autenticaï¿½ï¿½o real
             if (email == "admin@ufabc.edu.br" && senha == "123")
             {
                 return RedirectToAction("Index", "Home");
             }
 
-            ViewBag.Erro = "Usuário ou senha inválidos";
+            ViewBag.Erro = "Usuï¿½rio ou senha invï¿½lidos";
             return View();
+        }
+
+        [HttpGet]
+        public IActionResult Register()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult Register(RegisterViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            // TODO: persistir usuÃ¡rio (mock for now)
+            // In a real app, create the user and redirect to login or auto-login.
+
+            TempData["SuccessMessage"] = "Conta criada com sucesso. FaÃ§a login.";
+            return RedirectToAction("Login");
         }
     }
 }
