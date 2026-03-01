@@ -44,5 +44,31 @@ namespace ProgressoAcademico.Controllers
             TempData["SuccessMessage"] = "Conta criada com sucesso. Faça login.";
             return RedirectToAction("Login");
         }
+
+        // -----------------------------------------------------------
+        // Esqueceu senha
+        // -----------------------------------------------------------
+
+        [HttpGet]
+        public IActionResult ForgotPassword()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult ForgotPassword(ForgotPasswordViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            // TODO: implementar envio de e-mail real. Por enquanto apenas mostra mensagem.
+            TempData["SuccessMessage"] =
+                "Se o e-mail estiver cadastrado, você receberá instruções para redefinir sua senha.";
+
+            // manter o usuário na mesma página para verificação
+            return View();
+        }
     }
 }
