@@ -18,13 +18,10 @@ namespace ProgressoAcademico.Context
         public DbSet<UsuarioPerfil> UsuariosPerfis { get; set; }
         public DbSet<VinculoInstitucional> VinculosInstitucionais { get; set; }
         public DbSet<TipoVinculo> TiposVinculo { get; set; }
-        public DbSet<ClasseDocente> ClassesDocente { get; set; }
-
         public DbSet<SolicitacaoProgressao> SolicitacoesProgressao { get; set; }
         public DbSet<StatusSolicitacao> StatusSolicitacoes { get; set; }
         public DbSet<TipoProgresso> TiposProgresso { get; set; }
         public DbSet<Nivel> Niveis { get; set; }
-
         public DbSet<Atividade> Atividades { get; set; }
         public DbSet<TipoAtividade> TiposAtividade { get; set; }
         public DbSet<SubTipoAtividade> SubtiposAtividade { get; set; }
@@ -37,6 +34,7 @@ namespace ProgressoAcademico.Context
         public DbSet<TipoDocumento> TiposDocumento { get; set; }
 
         public DbSet<Instituicao> Instituicoes { get; set; }
+
 
         /* ==========================
            CONFIGURAÇÕES
@@ -55,12 +53,13 @@ namespace ProgressoAcademico.Context
                 .HasForeignKey<UsuarioPerfil>(p => p.UsuarioId);
 
             /* ==========================
-               USUARIO ↔ VINCULO INSTITUCIONAL (1:1, PK = FK)
+               USUARIO ↔ VINCULO INSTITUCIONAL (1:N)
                ========================== */
             modelBuilder.Entity<Usuario>()
-                .HasOne(u => u.VinculoInstitucional)
+                .HasMany(u => u.VinculosInstitucionais)
                 .WithOne(v => v.Usuario)
-                .HasForeignKey<VinculoInstitucional>(v => v.UsuarioId);
+                .HasForeignKey(v => v.UsuarioId)
+                .OnDelete(DeleteBehavior.Cascade);
 
             /* ==========================
                ATIVIDADE ↔ ESPECIALIZAÇÕES (1:1)
@@ -134,9 +133,9 @@ namespace ProgressoAcademico.Context
                 .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<VinculoInstitucional>()
-                .HasOne(v => v.ClasseDocente)
-                .WithMany(c => c.VinculosInstitucionais)
-                .HasForeignKey(v => v.ClasseDocenteId)
+                .HasOne(v => v.Nivel)
+                .WithMany(c => c.VinculoInstitucionals)
+                .HasForeignKey(v => v.NivelId)
                 .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<Documento>()

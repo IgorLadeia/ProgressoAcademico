@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace ProgressoAcademico.Migrations
 {
     /// <inheritdoc />
-    public partial class MigracaoInicial : Migration
+    public partial class InitialSchema : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -16,26 +16,10 @@ namespace ProgressoAcademico.Migrations
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
-                name: "ClassesDocente",
-                columns: table => new
-                {
-                    ClasseDocenteId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    Nome = table.Column<string>(type: "varchar(100)", maxLength: 100, nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    NivelHierarquico = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_ClassesDocente", x => x.ClasseDocenteId);
-                })
-                .Annotation("MySql:CharSet", "utf8mb4");
-
-            migrationBuilder.CreateTable(
                 name: "Instituicoes",
                 columns: table => new
                 {
-                    TipoVinculoId = table.Column<int>(type: "int", nullable: false)
+                    InstituicaoId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     Nome = table.Column<string>(type: "varchar(200)", maxLength: 200, nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
@@ -44,7 +28,7 @@ namespace ProgressoAcademico.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Instituicoes", x => x.TipoVinculoId);
+                    table.PrimaryKey("PK_Instituicoes", x => x.InstituicaoId);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
@@ -180,6 +164,7 @@ namespace ProgressoAcademico.Migrations
                     TipoAtividadeId = table.Column<int>(type: "int", nullable: false),
                     Nome = table.Column<string>(type: "varchar(150)", maxLength: 150, nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
+                    Pontos = table.Column<int>(type: "int", nullable: false),
                     Descricao = table.Column<string>(type: "longtext", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4")
                 },
@@ -258,7 +243,8 @@ namespace ProgressoAcademico.Migrations
                     UsuarioId = table.Column<int>(type: "int", nullable: false),
                     Apelido = table.Column<string>(type: "varchar(200)", maxLength: 200, nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    FotoPerfil = table.Column<byte[]>(type: "longblob", nullable: false)
+                    FotoPerfil = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4")
                 },
                 constraints: table =>
                 {
@@ -276,28 +262,30 @@ namespace ProgressoAcademico.Migrations
                 name: "VinculosInstitucionais",
                 columns: table => new
                 {
+                    VinculoInstitucionalId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     UsuarioId = table.Column<int>(type: "int", nullable: false),
                     InstituicaoId = table.Column<int>(type: "int", nullable: false),
                     TipoVinculoId = table.Column<int>(type: "int", nullable: false),
-                    ClasseDocenteId = table.Column<int>(type: "int", nullable: false),
+                    NivelId = table.Column<int>(type: "int", nullable: false),
                     DataIngressoInstituicao = table.Column<DateTime>(type: "datetime(6)", nullable: false),
                     DataUltimaProgressao = table.Column<DateTime>(type: "datetime(6)", nullable: true),
                     Ativo = table.Column<bool>(type: "tinyint(1)", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_VinculosInstitucionais", x => x.UsuarioId);
-                    table.ForeignKey(
-                        name: "FK_VinculosInstitucionais_ClassesDocente_ClasseDocenteId",
-                        column: x => x.ClasseDocenteId,
-                        principalTable: "ClassesDocente",
-                        principalColumn: "ClasseDocenteId",
-                        onDelete: ReferentialAction.Restrict);
+                    table.PrimaryKey("PK_VinculosInstitucionais", x => x.VinculoInstitucionalId);
                     table.ForeignKey(
                         name: "FK_VinculosInstitucionais_Instituicoes_InstituicaoId",
                         column: x => x.InstituicaoId,
                         principalTable: "Instituicoes",
-                        principalColumn: "TipoVinculoId",
+                        principalColumn: "InstituicaoId",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_VinculosInstitucionais_Niveis_NivelId",
+                        column: x => x.NivelId,
+                        principalTable: "Niveis",
+                        principalColumn: "NivelId",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_VinculosInstitucionais_TiposVinculo_TipoVinculoId",
@@ -558,19 +546,24 @@ namespace ProgressoAcademico.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_VinculosInstitucionais_ClasseDocenteId",
-                table: "VinculosInstitucionais",
-                column: "ClasseDocenteId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_VinculosInstitucionais_InstituicaoId",
                 table: "VinculosInstitucionais",
                 column: "InstituicaoId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_VinculosInstitucionais_NivelId",
+                table: "VinculosInstitucionais",
+                column: "NivelId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_VinculosInstitucionais_TipoVinculoId",
                 table: "VinculosInstitucionais",
                 column: "TipoVinculoId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_VinculosInstitucionais_UsuarioId",
+                table: "VinculosInstitucionais",
+                column: "UsuarioId");
         }
 
         /// <inheritdoc />
@@ -602,9 +595,6 @@ namespace ProgressoAcademico.Migrations
 
             migrationBuilder.DropTable(
                 name: "TiposDocumento");
-
-            migrationBuilder.DropTable(
-                name: "ClassesDocente");
 
             migrationBuilder.DropTable(
                 name: "Instituicoes");

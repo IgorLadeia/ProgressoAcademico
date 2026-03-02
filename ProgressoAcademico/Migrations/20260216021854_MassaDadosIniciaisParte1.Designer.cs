@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ProgressoAcademico.Context;
 
@@ -10,9 +11,11 @@ using ProgressoAcademico.Context;
 namespace ProgressoAcademico.Migrations
 {
     [DbContext(typeof(ProgressoAcademicoDbContext))]
-    partial class ProgressoAcademicoDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260216021854_MassaDadosIniciaisParte1")]
+    partial class MassaDadosIniciaisParte1
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

@@ -6,7 +6,7 @@ public class Instituicao
 {
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-    public int TipoVinculoId { get; set; }
+    public int InstituicaoId { get; set; }
 
     [Required, MaxLength(200)]
     public string Nome { get; set; } 

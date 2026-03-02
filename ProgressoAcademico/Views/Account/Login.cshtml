@@ -1,0 +1,171 @@
+﻿@model ProgressoAcademico.ViewModels.LoginViewModel
+
+<!-- Load page-specific styles -->
+@section Styles {
+    <link rel="stylesheet" href="~/css/pages/login.css" asp-append-version="true" />
+}
+
+<!-- Set page title -->
+@{
+    ViewData["Title"] = "Login";
+}
+
+<div class="page-bg">
+    <div class="login-card">
+
+        <!-- LEFT: White content area with form -->
+        <div class="login-left">
+            <!-- Brand header with navigation -->
+            <header class="brand">
+                <img src="~/images/ufabc-logo.png" alt="UFABC Logo" class="brand-logo" />
+                <nav class="brand-nav" aria-label="Main navigation">
+                    <a href="/" aria-current="false">Home</a>
+                    <a href="#" aria-current="false">Sobre</a>
+                    <a href="#" aria-current="false">Contato</a>
+                    <a href="/Account/Login" aria-current="page" class="active">Login</a>
+                </nav>
+            </header>
+
+            <!-- Login form section -->
+            <main class="form-area" role="main" aria-labelledby="login-title">
+                <h1 id="login-title">Login</h1>
+                <p>Acesse sua conta UFABC</p>
+
+                <form method="post" action="/Account/Login" class="login-form" autocomplete="on">
+                    @Html.AntiForgeryToken()
+
+                    <!-- Email input field -->
+                    <div class="input-group">
+                        <label for="Email" class="sr-only">Seu email</label>
+                        <div class="input-with-icon">
+                            <span class="icon" aria-hidden="true">👤</span>
+                            <input 
+                                id="Email" 
+                                name="Email" 
+                                type="email" 
+                                placeholder="seu@exemplo.edu.br" 
+                                required
+                                aria-describedby="email-error" />
+                        </div>
+                    </div>
+
+                    <!-- Password input field -->
+                    <div class="input-group">
+                        <label for="Password" class="sr-only">Sua senha</label>
+                        <div class="input-with-icon input-password">
+                            <span class="icon" aria-hidden="true">🔒</span>
+                            <input 
+                                id="Password" 
+                                name="Password" 
+                                type="password" 
+                                placeholder="••••••••" 
+                                required
+                                aria-describedby="password-error" />
+                            <button 
+                                type="button" 
+                                class="eye-btn js-toggle-password" 
+                                data-target="#Password" 
+                                aria-label="Alternar visibilidade da senha"
+                                aria-pressed="false">
+                                👁️
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Remember & forgot password row -->
+                    <div class="form-row">
+                        <label class="checkbox">
+                            <input type="checkbox" name="Remember" aria-label="Lembrar meu login" />
+                            Lembrar-me
+                        </label>
+                        <a class="forgot" href="/Account/ForgotPassword" aria-label="Recuperar senha">Esqueceu a senha?</a>
+                    </div>
+
+                    <!-- Submit button -->
+                    <button class="btn-primary" type="submit" aria-label="Fazer login na plataforma">
+                        Entrar
+                    </button>
+
+                    <!-- Divider -->
+                    <div class="divider"><span>ou</span></div>
+
+                    <!-- Register link -->
+                    <p class="register-link">Não possui conta? <a href="/Account/Register">Cadastrar-se</a></p>
+
+                    <!-- Validation error messages -->
+                    @if (!ViewData.ModelState.IsValid)
+                    {
+                        <div class="validation-summary" role="alert" aria-live="polite">
+                            @Html.ValidationSummary()
+                        </div>
+                    }
+
+                </form>
+            </main>
+        </div>
+
+        <!-- RIGHT: Green panel with informational card -->
+        <aside class="login-right" aria-label="Important information">
+            <div class="right-card">
+                <!-- Card header -->
+                <div class="right-header">
+                    <div class="megaphone" aria-hidden="true">📣</div>
+                    <h3>Próxima Data de Solicitação</h3>
+                </div>
+
+                <!-- Card subtitle -->
+                <p class="right-sub">Data limite para solicitação de progresso acadêmico</p>
+
+                <!-- Important date -->
+                <div class="big-date" role="doc-subtitle">
+                    <span aria-hidden="true">📅</span>
+                    <strong>15 de Maio, 2024</strong>
+                </div>
+
+                <!-- Tips list -->
+                <ul class="tips">
+                    <li>Prepare a documentação necessária</li>
+                    <li>Envie sua solicitação pelo portal oficial</li>
+                </ul>
+
+                <!-- Link to all important dates -->
+                <a class="all-dates" href="#" aria-label="Ver todas as datas importantes para solicitações">Ver todas as datas</a>
+            </div>
+        </aside>
+
+    </div>
+</div>
+
+<!-- Password visibility toggle script -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Toggle password visibility
+        const toggleButtons = document.querySelectorAll('.js-toggle-password');
+        
+        toggleButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const targetId = this.getAttribute('data-target');
+                const input = document.querySelector(targetId);
+                
+                if (input) {
+                    const isPassword = input.type === 'password';
+                    input.type = isPassword ? 'text' : 'password';
+                    this.setAttribute('aria-pressed', !isPassword);
+                    this.textContent = isPassword ? '🙈' : '👁️';
+                }
+            });
+        });
+
+        // Add input focus animations
+        const inputs = document.querySelectorAll('.input-with-icon input');
+        inputs.forEach(input => {
+            input.addEventListener('focus', function() {
+                this.parentElement.style.transform = 'scale(1.01)';
+            });
+            
+            input.addEventListener('blur', function() {
+                this.parentElement.style.transform = 'scale(1)';
+            });
+        });
+    });
+</script>

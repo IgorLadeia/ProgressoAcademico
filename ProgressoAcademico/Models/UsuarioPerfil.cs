@@ -16,5 +16,5 @@ public class UsuarioPerfil
     [MaxLength(200)]
     public string Apelido { get; set; }
 
-    public byte[] FotoPerfil { get; set; }
+    public string FotoPerfil { get; set; }
 }

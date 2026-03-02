@@ -1,0 +1,54 @@
+﻿@* @model ProgressoAcademico.ViewModels.HomeViewModel
+
+
+@{
+    ViewData["Title"] = "Home";
+    Layout = "_Layout.Auth";
+}
+
+<h1>Minhas Progressões Acadêmicas</h1>
+
+<section class="progress-list">
+
+    @* @foreach (var progress in Model.Progresses) 
+    {
+        <div class="progress-card">
+            <div class="progress-header">
+                <h3>@progress.Title</h3>
+                <span class="status @progress.StatusCss">
+                    @progress.StatusDescription
+                </span>
+            </div>
+
+            <p class="created-date">
+                Criado em @progress.CreatedAt.ToString("dd MMM yyyy")
+            </p>
+
+            <p>@progress.Description</p>
+
+            <div class="progress-actions">
+                @if (progress.CanEdit)
+                {
+                    <a class="btn btn-secondary" asp-action="Edit" asp-route-id="@progress.Id">Editar</a>
+                }
+
+                @if (progress.CanDelete)
+                {
+                    <a class="btn btn-danger" asp-action="Delete" asp-route-id="@progress.Id">Excluir</a>
+                }
+
+                @if (progress.IsFinalized)
+                {
+                    <a class="btn btn-outline" asp-action="Details" asp-route-id="@progress.Id">Visualizar</a>
+                    <a class="btn btn-primary" asp-action="GeneratePdf" asp-route-id="@progress.Id">Gerar PDF</a>
+                }
+            </div>
+        </div>
+    }
+</section>
+
+<div class="new-progress">
+    <a class="btn btn-success" asp-controller="Progress" asp-action="Create">
+        + Novo Progresso Acadêmico
+    </a>
+</div> *@
