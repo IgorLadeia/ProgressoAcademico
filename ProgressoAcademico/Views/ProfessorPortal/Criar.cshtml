@@ -1,0 +1,64 @@
+@model ProgressoAcademico.Models.ViewModels.ProfessorPortal.CriarSolicitacaoViewModel
+@{
+    ViewData["Title"] = "Nova Solicitacao";
+    Layout = "_Layout.Auth";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/pages/professor-portal.css" asp-append-version="true" />
+}
+
+<section class="portal-title">
+    <div>
+        <h1>Nova solicitacao</h1>
+        <p>Informe o tipo de progressao e os niveis envolvidos no pedido.</p>
+    </div>
+    <a class="btn-secondary" asp-controller="ProfessorPortal" asp-action="Solicitacoes">Voltar</a>
+</section>
+
+<section class="portal-card">
+    <form asp-controller="ProfessorPortal" asp-action="Criar" method="post">
+        @Html.AntiForgeryToken()
+
+        <div asp-validation-summary="ModelOnly" class="validation-summary"></div>
+
+        <div class="form-grid">
+            <div class="form-field">
+                <label asp-for="TipoProgressoId">Tipo de progressao</label>
+                <select asp-for="TipoProgressoId" asp-items="Model.TiposProgresso">
+                    <option value="">Selecione</option>
+                </select>
+                <span asp-validation-for="TipoProgressoId"></span>
+            </div>
+            <div class="form-field">
+                <label asp-for="Apelido">Apelido</label>
+                <input asp-for="Apelido" placeholder="Ex.: Progressao 2026" />
+                <span asp-validation-for="Apelido"></span>
+            </div>
+            <div class="form-field">
+                <label asp-for="NivelOrigemId">Nivel de origem</label>
+                <select asp-for="NivelOrigemId" asp-items="Model.Niveis">
+                    <option value="">Selecione</option>
+                </select>
+                <span asp-validation-for="NivelOrigemId"></span>
+            </div>
+            <div class="form-field">
+                <label asp-for="NivelDestinoId">Nivel de destino</label>
+                <select asp-for="NivelDestinoId" asp-items="Model.Niveis">
+                    <option value="">Selecione</option>
+                </select>
+                <span asp-validation-for="NivelDestinoId"></span>
+            </div>
+            <div class="form-field full">
+                <label asp-for="Observacao">Observacao</label>
+                <textarea asp-for="Observacao" placeholder="Contexto inicial da solicitacao"></textarea>
+                <span asp-validation-for="Observacao"></span>
+            </div>
+        </div>
+
+        <div class="form-actions">
+            <button class="btn-primary" type="submit">Criar solicitacao</button>
+            <a class="btn-secondary" asp-controller="ProfessorPortal" asp-action="Dashboard">Cancelar</a>
+        </div>
+    </form>
+</section>

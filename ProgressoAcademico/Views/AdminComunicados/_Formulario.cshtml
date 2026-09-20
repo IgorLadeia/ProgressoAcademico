@@ -1,0 +1,31 @@
+@model ProgressoAcademico.Models.ViewModels.Comunicados.ComunicadoFormViewModel
+
+<div class="form-grid">
+    <div class="form-field">
+        <label asp-for="Titulo">Título</label>
+        <input asp-for="Titulo" placeholder="Ex.: Nova janela de solicitação" />
+        <span asp-validation-for="Titulo"></span>
+    </div>
+    <div class="form-field">
+        <label asp-for="Categoria">Categoria</label>
+        <input asp-for="Categoria" placeholder="Informativo, prazo, documento..." />
+        <span asp-validation-for="Categoria"></span>
+    </div>
+    <div class="form-field full">
+        <label asp-for="Resumo">Resumo</label>
+        <input asp-for="Resumo" placeholder="Apresentação curta do conteúdo" />
+        <span asp-validation-for="Resumo"></span>
+    </div>
+    <div class="form-field full">
+        <label asp-for="Conteudo">Conteúdo</label>
+        <textarea asp-for="Conteudo" placeholder="Detalhe a orientação para professores e avaliadores"></textarea>
+        <span asp-validation-for="Conteudo"></span>
+    </div>
+    <div class="publish-option">
+        <input asp-for="Publicado" type="checkbox" />
+        <label asp-for="Publicado">
+            <strong>Exibir na Home</strong>
+            <span>Desmarque para manter o conteúdo como rascunho administrativo.</span>
+        </label>
+    </div>
+</div>

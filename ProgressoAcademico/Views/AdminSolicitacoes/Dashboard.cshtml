@@ -1,0 +1,50 @@
+@model ProgressoAcademico.Application.DTOs.Admin.AdminDashboardDto
+@{
+    ViewData["Title"] = "Dashboard Administrativo";
+    Layout = "_Layout.Admin";
+}
+<section class="admin-title">
+    <div>
+        <h1>Dashboard administrativo</h1>
+        <p>Visao geral das solicitacoes, documentos, atividades e pendencias de revisao.</p>
+    </div>
+    <a class="btn-primary" asp-controller="AdminSolicitacoes" asp-action="Index">Revisar solicitacoes</a>
+</section>
+<section class="metric-grid">
+    <article class="metric-card"><span>Total</span><strong>@Model.TotalSolicitacoes</strong></article>
+    <article class="metric-card"><span>Aguardando atribuicao</span><strong>@Model.AguardandoAtribuicao</strong></article>
+    <article class="metric-card"><span>Em processamento</span><strong>@Model.EmProcessamento</strong></article>
+    <article class="metric-card"><span>Em revisao</span><strong>@Model.EmRevisao</strong></article>
+    <article class="metric-card"><span>Decisao final</span><strong>@Model.AguardandoDecisaoFinal</strong></article>
+    <article class="metric-card"><span>Ajustes</span><strong>@Model.AjustesSolicitados</strong></article>
+    <article class="metric-card"><span>Aprovadas</span><strong>@Model.Aprovadas</strong></article>
+    <article class="metric-card"><span>Negadas</span><strong>@Model.Negadas</strong></article>
+    <article class="metric-card"><span>Encerradas</span><strong>@Model.Encerradas</strong></article>
+    <article class="metric-card"><span>Professores</span><strong>@Model.TotalProfessores</strong></article>
+    <article class="metric-card"><span>Revisores</span><strong>@Model.TotalRevisores</strong></article>
+    <article class="metric-card"><span>Documentos</span><strong>@Model.TotalDocumentos</strong></article>
+    <article class="metric-card"><span>Preenchimento medio</span><strong>@Model.PercentualMedioPreenchimento%</strong></article>
+</section>
+<section class="admin-card">
+    <h2>Solicitacoes recentes</h2>
+    <table class="admin-table">
+        <thead><tr><th>ID</th><th>Professor</th><th>Tipo</th><th>Revisor</th><th>Status</th><th>Preenchimento</th><th></th></tr></thead>
+        <tbody>
+        @foreach (var item in Model.Recentes)
+        {
+            <tr>
+                <td>#@item.SolicitacaoProgressaoId</td>
+                <td>@item.Professor<br /><small>@item.EmailProfessor</small></td>
+                <td>@item.TipoProgressao<br />@item.NivelOrigem -> @item.NivelDestino@if (item.Multiprogressao) { <br /><small>Multiprogressao</small> }</td>
+                <td>@(item.Revisor ?? "Nao atribuido")</td>
+                <td><span class="status-badge status-@StatusClass(item.Status)">@item.Status</span></td>
+                <td>@item.PercentualPreenchimento%</td>
+                <td><a class="btn-secondary" asp-action="Detalhes" asp-route-id="@item.SolicitacaoProgressaoId">Revisar</a></td>
+            </tr>
+        }
+        </tbody>
+    </table>
+</section>
+@functions {
+    private static string StatusClass(string status) => status.ToLowerInvariant().Replace(" ", "-").Replace("ç", "c").Replace("ã", "a");
+}

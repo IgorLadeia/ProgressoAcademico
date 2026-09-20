@@ -1,0 +1,95 @@
+@model ProgressoAcademico.Models.ViewModels.Admin.AdminUsuariosIndexViewModel
+@using ProgressoAcademico.Models
+@{
+    ViewData["Title"] = "Usuarios";
+    Layout = "_Layout.Admin";
+}
+<section class="admin-title">
+    <div>
+        <h1>Usuarios e acessos</h1>
+        <p>Edite o nivel de acesso dos usuarios. Revisoes ja realizadas continuam preservadas no historico.</p>
+    </div>
+    <a class="btn-secondary" asp-controller="AdminSolicitacoes" asp-action="Dashboard">Dashboard</a>
+</section>
+@if (TempData["Mensagem"] is string mensagem) { <div class="alert-success">@mensagem</div> }
+@if (TempData["Erro"] is string erro) { <div class="validation-summary">@erro</div> }
+<section class="admin-card">
+    <table class="admin-table access-table">
+        <thead>
+            <tr><th>Usuario</th><th>Nivel de acesso</th><th>Status</th><th>Criacao</th><th>Acoes</th></tr>
+        </thead>
+        <tbody>
+        @foreach (var usuario in Model.Usuarios)
+        {
+            var nivelAtual = NivelAcesso(usuario);
+            var formId = $"access-form-{usuario.UsuarioId}";
+            <tr class="access-row">
+                <td>
+                    <div class="user-cell">
+                        <img src="@usuario.AvatarFallbackUrl" alt="" />
+                        <div>@usuario.Nome<br /><small>@usuario.Email</small></div>
+                    </div>
+                </td>
+                <td>
+                    <span class="access-readonly">@nivelAtual</span>
+                    <select class="access-select" name="nivelAcesso" form="@formId" disabled>
+                        <option value="@PerfisAcesso.Professor" selected="@(nivelAtual == PerfisAcesso.Professor)">Professor</option>
+                        <option value="@PerfisAcesso.Revisor" selected="@(nivelAtual == PerfisAcesso.Revisor)">Revisor</option>
+                        <option value="@PerfisAcesso.Administrador" selected="@(nivelAtual == PerfisAcesso.Administrador)">Administrador</option>
+                    </select>
+                </td>
+                <td>
+                    <span class="status-badge @(usuario.Ativo ? "status-active" : "status-inactive")">
+                        @(usuario.Ativo ? "Ativo" : "Inativo")
+                    </span>
+                </td>
+                <td>@usuario.DataCriacao.ToString("dd/MM/yyyy")</td>
+                <td>
+                    <form id="@formId" asp-action="AlterarNivelAcesso" method="post" class="access-form">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="usuarioId" value="@usuario.UsuarioId" />
+                        <div class="actions-stack">
+                            <button class="btn-secondary access-edit-button" type="button" aria-label="Editar nivel de acesso">Editar</button>
+                        </div>
+                    </form>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+</section>
+
+@section Scripts {
+    <script>
+        document.querySelectorAll('.access-row').forEach((row) => {
+            const button = row.querySelector('.access-edit-button');
+            const select = row.querySelector('.access-select');
+            const label = row.querySelector('.access-readonly');
+
+            button.addEventListener('click', (event) => {
+                event.preventDefault();
+
+                if (select.disabled) {
+                    row.classList.add('is-editing');
+                    select.disabled = false;
+                    select.focus();
+                    label.hidden = true;
+                    button.textContent = 'Salvar';
+                    return;
+                }
+
+                button.closest('form').submit();
+            });
+        });
+    </script>
+}
+
+@functions {
+    private static string NivelAcesso(ProgressoAcademico.Application.DTOs.Admin.AdminUsuarioAcessoDto usuario)
+    {
+        if (usuario.PerfilAcesso == PerfisAcesso.Administrador)
+            return PerfisAcesso.Administrador;
+
+        return usuario.PodeRevisar ? PerfisAcesso.Revisor : PerfisAcesso.Professor;
+    }
+}

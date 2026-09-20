@@ -1,0 +1,71 @@
+@model ProgressoAcademico.Models.ViewModels.ProfessorPortal.ProfessorDashboardViewModel
+@{
+    ViewData["Title"] = "Dashboard do Professor";
+    Layout = "_Layout.Auth";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/pages/professor-portal.css" asp-append-version="true" />
+}
+
+<section class="portal-title">
+    <div>
+        <h1>Dashboard do professor</h1>
+        <p>@Model.NomeProfessor, acompanhe suas solicitacoes de progressao academica.</p>
+    </div>
+    <a class="btn-primary" asp-controller="ProfessorPortal" asp-action="Criar">Nova solicitacao</a>
+</section>
+
+@if (TempData["Mensagem"] is string mensagem)
+{
+    <div class="alert-success">@mensagem</div>
+}
+
+<section class="metric-grid" aria-label="Resumo das solicitacoes">
+    <article class="metric-card">
+        <span>Total</span>
+        <strong>@Model.TotalSolicitacoes</strong>
+    </article>
+    <article class="metric-card">
+        <span>Em processamento</span>
+        <strong>@Model.EmProcessamento</strong>
+    </article>
+    <article class="metric-card">
+        <span>Ajustes</span>
+        <strong>@Model.AjustesSolicitados</strong>
+    </article>
+    <article class="metric-card">
+        <span>Aprovadas</span>
+        <strong>@Model.Aprovadas</strong>
+    </article>
+    <article class="metric-card">
+        <span>Negadas</span>
+        <strong>@Model.Negadas</strong>
+    </article>
+    <article class="metric-card">
+        <span>Encerradas</span>
+        <strong>@Model.Encerradas</strong>
+    </article>
+</section>
+
+<section class="portal-grid dashboard-requests-grid">
+    <article class="portal-card">
+        <h2>Solicitacoes recentes</h2>
+        @if (Model.SolicitacoesRecentes.Count == 0)
+        {
+            <div class="empty-state">
+                <h2>Nenhuma solicitacao encontrada</h2>
+                <p>Crie sua primeira solicitacao para iniciar o acompanhamento.</p>
+            </div>
+        }
+        else
+        {
+            <div class="request-list">
+                @foreach (var solicitacao in Model.SolicitacoesRecentes)
+                {
+                    <partial name="_SolicitacaoResumo" model="solicitacao" />
+                }
+            </div>
+        }
+    </article>
+</section>

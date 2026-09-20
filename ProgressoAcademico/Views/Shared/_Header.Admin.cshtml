@@ -1,0 +1,29 @@
+@{
+    var userName = User.Identity?.Name ?? "Administrador";
+    var initial = userName.Length > 0 ? userName[..1].ToUpperInvariant() : "A";
+}
+
+<header class="admin-header">
+    <div class="admin-header-left">
+        <a asp-controller="AdminSolicitacoes" asp-action="Dashboard" aria-label="Dashboard administrativo">
+            <img src="~/images/logo-ufabc-oficial.svg" alt="UFABC" class="admin-logo" />
+        </a>
+        <nav class="admin-nav" aria-label="Navegacao administrativa">
+            <a asp-controller="AdminSolicitacoes" asp-action="Dashboard">Dashboard</a>
+            <a asp-controller="AdminSolicitacoes" asp-action="Index">Solicitacoes</a>
+            <a asp-controller="AdminUsuarios" asp-action="Index">Usuarios</a>
+            <a asp-controller="AdminComunicados" asp-action="Index">Conteúdo da Home</a>
+        </nav>
+    </div>
+    <div class="admin-user">
+        <span class="admin-avatar">@initial</span>
+        <div>
+            <strong>@userName</strong><br />
+            <span>Administrador</span>
+        </div>
+        <form asp-controller="Account" asp-action="Logout" method="post">
+            @Html.AntiForgeryToken()
+            <button type="submit">Sair</button>
+        </form>
+    </div>
+</header>

@@ -1,0 +1,83 @@
+@model ProgressoAcademico.Models.ViewModels.Login.LoginViewModel
+@{
+    ViewData["Title"] = "Login";
+    ViewData["ActivePage"] = "Login";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/pages/public.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/pages/login.css" asp-append-version="true" />
+}
+
+<div class="public-page login-page">
+    <div class="public-shell">
+        <div class="public-content">
+            <partial name="_PublicHeader" />
+
+            <main class="login-layout" aria-labelledby="login-title">
+                <section class="login-form-panel">
+                    <span class="eyebrow">Área segura</span>
+                    <h1 id="login-title">Acesso ao sistema de progressão acadêmica.</h1>
+                    <p class="login-intro">Entre com a conta cadastrada para acessar as funcionalidades permitidas ao seu perfil.</p>
+
+                    <form asp-controller="Account" asp-action="Login" method="post" class="login-form" autocomplete="on">
+                        @Html.AntiForgeryToken()
+
+                        <div asp-validation-summary="ModelOnly" class="validation-summary" role="alert"></div>
+
+                        <div class="login-field">
+                            <label asp-for="Email">E-mail</label>
+                            <div class="login-input">
+                                <i data-feather="mail" aria-hidden="true"></i>
+                                <input asp-for="Email" type="email" placeholder="seu.email@ufabc.edu.br" autocomplete="username" required />
+                            </div>
+                            <span asp-validation-for="Email"></span>
+                        </div>
+
+                        <div class="login-field">
+                            <label asp-for="Senha">Senha</label>
+                            <div class="login-input password-input">
+                                <i data-feather="lock" aria-hidden="true"></i>
+                                <input asp-for="Senha" type="password" placeholder="Digite sua senha" autocomplete="current-password" required />
+                                <button type="button"
+                                        class="password-toggle js-toggle-password"
+                                        data-target="#Senha"
+                                        aria-label="Mostrar senha"
+                                        aria-pressed="false"
+                                        title="Mostrar senha">
+                                    <i data-feather="eye" aria-hidden="true"></i>
+                                </button>
+                            </div>
+                            <span asp-validation-for="Senha"></span>
+                        </div>
+
+                        <button class="btn-primary login-submit" type="submit">Entrar</button>
+
+                        <p class="register-link">
+                            Ainda não possui conta?
+                            <a asp-controller="Cadastro" asp-action="Index">Cadastre-se como professor</a>
+                        </p>
+                    </form>
+                </section>
+
+                <aside class="login-context" aria-labelledby="access-title">
+                    <span class="panel-kicker">Acesso por perfil</span>
+                    <h2 id="access-title">O sistema direciona cada usuário conforme sua responsabilidade.</h2>
+                    <div class="login-role">
+                        <strong>Professor</strong>
+                        <p>Organize atividades, documentos e acompanhe suas solicitações.</p>
+                    </div>
+                    <div class="login-role">
+                        <strong>Revisor</strong>
+                        <p>Avalie somente solicitações atribuídas e registre pareceres técnicos.</p>
+                    </div>
+                    <div class="login-role">
+                        <strong>Administrador</strong>
+                        <p>Atribua revisores, acompanhe pareceres, registre decisões e gerencie conteúdo público.</p>
+                    </div>
+                    <a class="context-link" asp-controller="Public" asp-action="Projeto">Consultar escopo e arquitetura do projeto</a>
+                </aside>
+            </main>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,154 @@
+@model ProgressoAcademico.Models.ViewModels.Cadastro.CadastroViewModel
+@using ProgressoAcademico.Models.ViewModels.Cadastro
+@{
+    ViewData["Title"] = "Cadastro";
+    ViewData["ActivePage"] = "Login";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/pages/public.css" asp-append-version="true" />
+}
+
+<div class="public-page">
+    <div class="public-shell">
+        <div class="public-content">
+            <partial name="_PublicHeader" />
+
+            <section class="split-hero">
+                <div>
+                    <section class="page-title">
+                        <span class="eyebrow">Cadastro do professor</span>
+                        <h1>Crie uma conta de professor.</h1>
+                        <p>
+                            O cadastro básico cria o usuário no sistema. O cadastro completo também associa
+                            instituição, vínculo e nível da carreira para preparar as próximas etapas do portal.
+                        </p>
+                    </section>
+
+                    <form asp-controller="Cadastro" asp-action="Index" method="post" autocomplete="on">
+                        @Html.AntiForgeryToken()
+
+                        <div asp-validation-summary="ModelOnly" class="validation-summary"></div>
+
+                        <div class="mode-selector">
+                            <div class="mode-card">
+                                <label>
+                                    <input asp-for="ModoCadastro" type="radio" value="@CadastroModos.Basico" />
+                                    Dados básicos
+                                </label>
+                                <p>Nome, e-mail e senha. Os dados acadêmicos podem ser completados depois.</p>
+                            </div>
+                            <div class="mode-card">
+                                <label>
+                                    <input asp-for="ModoCadastro" type="radio" value="@CadastroModos.Completo" />
+                                    Dados completos
+                                </label>
+                                <p>Inclui instituição, tipo de vínculo, nível atual e datas da carreira.</p>
+                            </div>
+                        </div>
+
+                        <div class="form-grid">
+                            <div class="form-field">
+                                <label asp-for="Nome">Nome completo</label>
+                                <input asp-for="Nome" placeholder="Nome do professor" />
+                                <span asp-validation-for="Nome"></span>
+                            </div>
+                            <div class="form-field">
+                                <label asp-for="Email">E-mail institucional</label>
+                                <input asp-for="Email" type="email" placeholder="professor@ufabc.edu.br" />
+                                <span asp-validation-for="Email"></span>
+                            </div>
+                            <div class="form-field">
+                                <label asp-for="Senha">Senha</label>
+                                <input asp-for="Senha" type="password" placeholder="Mínimo de 8 caracteres" />
+                                <span asp-validation-for="Senha"></span>
+                            </div>
+                            <div class="form-field">
+                                <label asp-for="ConfirmarSenha">Confirmar senha</label>
+                                <input asp-for="ConfirmarSenha" type="password" placeholder="Repita a senha" />
+                                <span asp-validation-for="ConfirmarSenha"></span>
+                            </div>
+                        </div>
+
+                        <div class="form-grid" id="dados-complementares">
+                            <div class="form-field">
+                                <label asp-for="Apelido">Nome social/apelido</label>
+                                <input asp-for="Apelido" placeholder="Opcional" />
+                            </div>
+                            <div class="form-field">
+                                <label>Foto de perfil</label>
+                                <input value="Disponível após o primeiro acesso" readonly aria-readonly="true" />
+                            </div>
+                            <div class="form-field">
+                                <label asp-for="InstituicaoId">Instituição</label>
+                                <select asp-for="InstituicaoId" asp-items="Model.Instituicoes">
+                                    <option value="">Selecione</option>
+                                </select>
+                                <span asp-validation-for="InstituicaoId"></span>
+                            </div>
+                            <div class="form-field">
+                                <label asp-for="TipoVinculoId">Tipo de vínculo</label>
+                                <select asp-for="TipoVinculoId" asp-items="Model.TiposVinculo">
+                                    <option value="">Selecione</option>
+                                </select>
+                                <span asp-validation-for="TipoVinculoId"></span>
+                            </div>
+                            <div class="form-field">
+                                <label asp-for="NivelId">Nível atual</label>
+                                <select asp-for="NivelId" asp-items="Model.Niveis">
+                                    <option value="">Selecione</option>
+                                </select>
+                                <span asp-validation-for="NivelId"></span>
+                            </div>
+                            <div class="form-field">
+                                <label asp-for="DataIngressoInstituicao">Data de ingresso</label>
+                                <input asp-for="DataIngressoInstituicao" type="date" />
+                                <span asp-validation-for="DataIngressoInstituicao"></span>
+                            </div>
+                            <div class="form-field">
+                                <label asp-for="DataUltimoProgresso">Última progressão</label>
+                                <input asp-for="DataUltimoProgresso" type="date" />
+                            </div>
+                        </div>
+
+                        <div class="form-actions">
+                            <button class="btn-primary" type="submit">Finalizar cadastro</button>
+                            <a class="btn-secondary" asp-controller="Account" asp-action="Login">Voltar ao login</a>
+                        </div>
+                    </form>
+                </div>
+
+                <aside class="green-panel">
+                    <h2>Cadastro proporcional ao uso.</h2>
+                    <p>
+                        A LGPD orienta que a coleta de dados seja compatível com a finalidade. Por isso,
+                        o sistema permite iniciar com o mínimo necessário e completar informações acadêmicas
+                        quando elas forem usadas no processo de progressão.
+                    </p>
+                    <div class="white-panel">
+                        <strong>Perfil criado</strong>
+                        <p>Todo cadastro público entra como Professor. Funções de revisor ou administrador devem ser atribuídas por rotina administrativa controlada.</p>
+                    </div>
+                </aside>
+            </section>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        (function () {
+            const completo = '@CadastroModos.Completo';
+            const radios = document.querySelectorAll('input[name="ModoCadastro"]');
+            const painel = document.getElementById('dados-complementares');
+
+            function atualizar() {
+                const selecionado = document.querySelector('input[name="ModoCadastro"]:checked');
+                painel.style.display = selecionado && selecionado.value === completo ? 'grid' : 'none';
+            }
+
+            radios.forEach(radio => radio.addEventListener('change', atualizar));
+            atualizar();
+        })();
+    </script>
+}

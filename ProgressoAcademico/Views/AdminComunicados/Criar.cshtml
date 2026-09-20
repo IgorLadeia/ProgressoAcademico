@@ -1,0 +1,24 @@
+@model ProgressoAcademico.Models.ViewModels.Comunicados.ComunicadoFormViewModel
+@{
+    ViewData["Title"] = "Novo conteúdo da Home";
+    Layout = "_Layout.Admin";
+}
+
+<section class="admin-title">
+    <div>
+        <h1>Novo conteúdo da Home</h1>
+        <p>Cadastre uma informação, notícia, prazo ou orientação para o público da plataforma.</p>
+    </div>
+</section>
+
+<section class="admin-card content-form-card">
+    <form asp-controller="AdminComunicados" asp-action="Criar" method="post">
+        @Html.AntiForgeryToken()
+        <div asp-validation-summary="ModelOnly" class="validation-summary"></div>
+        <partial name="_Formulario" model="Model" />
+        <div class="form-actions">
+            <button class="btn-primary" type="submit">Salvar conteúdo</button>
+            <a class="btn-secondary" asp-controller="AdminComunicados" asp-action="Index">Cancelar</a>
+        </div>
+    </form>
+</section>

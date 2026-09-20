@@ -1,0 +1,30 @@
+@{
+    var userName = User.Identity?.Name ?? "Revisor";
+    var userId = int.TryParse(User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value, out var id) ? id : 1;
+    var avatarUrl = $"/images/avatars/avatar-{(Math.Abs(userId % 4) + 1)}.svg";
+}
+
+<header class="admin-header">
+    <div class="admin-header-left">
+        <a asp-controller="RevisorSolicitacoes" asp-action="Dashboard" aria-label="Dashboard do revisor">
+            <img src="~/images/logo-ufabc-oficial.svg" alt="UFABC" class="admin-logo" />
+        </a>
+        <nav class="admin-nav" aria-label="Navegacao do revisor">
+            <a asp-controller="RevisorSolicitacoes" asp-action="Dashboard">Dashboard</a>
+            <a asp-controller="RevisorSolicitacoes" asp-action="Index">Solicitacoes para revisar</a>
+            <a asp-controller="ProfessorPortal" asp-action="Dashboard">Meu portal</a>
+            <a asp-controller="ProfessorPortal" asp-action="Solicitacoes">Minhas solicitacoes</a>
+        </nav>
+    </div>
+    <div class="admin-user">
+        <span class="admin-avatar"><img src="@avatarUrl" alt="" /></span>
+        <div>
+            <strong>@userName</strong><br />
+            <span>Revisor</span>
+        </div>
+        <form asp-controller="Account" asp-action="Logout" method="post">
+            @Html.AntiForgeryToken()
+            <button type="submit">Sair</button>
+        </form>
+    </div>
+</header>

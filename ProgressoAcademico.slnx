@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="ProgressoAcademico/ProgressoAcademico.csproj" />
+  <Project Path="ProgressoAcademico.Tests/ProgressoAcademico.Tests.csproj" />
+</Solution>

@@ -1,0 +1,10 @@
+@model int
+
+<nav class="request-steps" aria-label="Etapas da solicitação">
+    <a class="btn-secondary" asp-controller="ProfessorPortal" asp-action="Detalhes" asp-route-id="@Model">Voltar</a>
+    <a class="btn-secondary" asp-controller="ProfessorAtividades" asp-action="Index" asp-route-solicitacaoId="@Model" asp-route-grupo="Ensino">Ensino</a>
+    <a class="btn-secondary" asp-controller="ProfessorAtividades" asp-action="Index" asp-route-solicitacaoId="@Model" asp-route-grupo="Extensão">Extensão</a>
+    <a class="btn-secondary" asp-controller="ProfessorAtividades" asp-action="Index" asp-route-solicitacaoId="@Model" asp-route-grupo="Gestão">Gestão</a>
+    <a class="btn-secondary" asp-controller="ProfessorAtividades" asp-action="Index" asp-route-solicitacaoId="@Model" asp-route-grupo="Pesquisa">Pesquisa</a>
+    <a class="btn-primary" asp-controller="ProfessorElegibilidade" asp-action="Index" asp-route-solicitacaoId="@Model">Elegibilidade</a>
+</nav>

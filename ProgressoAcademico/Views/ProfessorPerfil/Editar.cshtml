@@ -1,0 +1,164 @@
+@model ProgressoAcademico.Models.ViewModels.ProfessorPerfil.ProfessorPerfilEdicaoViewModel
+@{
+    ViewData["Title"] = "Meu Perfil";
+    Layout = "_Layout.Auth";
+    var nomeExibicao = string.IsNullOrWhiteSpace(Model.NomeSocial) ? Model.NomeCompleto : Model.NomeSocial;
+    var inicial = string.IsNullOrWhiteSpace(nomeExibicao) ? "P" : nomeExibicao[..1].ToUpperInvariant();
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/pages/professor-portal.css" asp-append-version="true" />
+}
+
+<section class="portal-title">
+    <div>
+        <span class="profile-eyebrow">Conta do professor</span>
+        <h1>Meu perfil</h1>
+        <p>Atualize seus dados pessoais, foto e informacoes funcionais usadas na elegibilidade.</p>
+    </div>
+    <a class="btn-secondary" asp-controller="ProfessorPortal" asp-action="Dashboard">Voltar ao dashboard</a>
+</section>
+
+@if (TempData["Mensagem"] is string mensagem)
+{
+    <div class="alert-success">@mensagem</div>
+}
+
+<section class="profile-layout">
+    <aside class="profile-photo-panel">
+        <h2>Foto de perfil</h2>
+        <p>A imagem sera exibida no cabecalho do portal.</p>
+
+        <label class="profile-photo-control" for="Foto" title="Selecionar nova foto">
+            <span class="profile-photo-preview" id="foto-preview">
+                @if (Model.PossuiFoto)
+                {
+                    <img src="@(Model.FotoPerfilUrl ?? Url.Action("Foto", "ProfessorPerfil"))" alt="Foto atual do perfil" id="foto-preview-image" />
+                }
+                else
+                {
+                    <span id="foto-preview-inicial">@inicial</span>
+                }
+            </span>
+            <span class="profile-photo-action">Alterar foto</span>
+        </label>
+
+        <p class="profile-file-help">PNG ou JPEG, com no maximo 2 MB.</p>
+    </aside>
+
+    <article class="portal-card profile-form-panel">
+        <form asp-controller="ProfessorPerfil" asp-action="Editar" method="post" enctype="multipart/form-data">
+            @Html.AntiForgeryToken()
+            <div asp-validation-summary="ModelOnly" class="validation-summary"></div>
+
+            <input asp-for="PossuiFoto" type="hidden" />
+            <input asp-for="Foto" type="file" accept="image/png,image/jpeg,.png,.jpg,.jpeg" class="sr-only" />
+
+            <div class="section-heading compact">
+                <div>
+                    <h2>Dados pessoais</h2>
+                    <p>Essas informacoes identificam o professor na solicitacao e no PDF final.</p>
+                </div>
+            </div>
+
+            <div class="form-grid">
+                <div class="form-field">
+                    <label asp-for="NomeCompleto">Nome completo</label>
+                    <input asp-for="NomeCompleto" autocomplete="name" />
+                    <span asp-validation-for="NomeCompleto"></span>
+                </div>
+                <div class="form-field">
+                    <label asp-for="Email">E-mail institucional</label>
+                    <input asp-for="Email" autocomplete="email" />
+                    <span asp-validation-for="Email"></span>
+                </div>
+                <div class="form-field full">
+                    <label asp-for="NomeSocial">Nome social (apelido)</label>
+                    <input asp-for="NomeSocial" placeholder="Nome social ou apelido exibido no portal" autocomplete="name" />
+                    <span asp-validation-for="NomeSocial"></span>
+                    <small>Deixe em branco para utilizar o nome completo.</small>
+                </div>
+            </div>
+
+            <div class="section-heading compact profile-section-divider">
+                <div>
+                    <h2>Dados funcionais</h2>
+                    <p>Esses campos alimentam os requisitos de intersticio, classe/nivel e dados pessoais da elegibilidade.</p>
+                </div>
+            </div>
+
+            <div class="form-grid">
+                <div class="form-field">
+                    <label asp-for="InstituicaoId">Instituicao</label>
+                    <select asp-for="InstituicaoId" asp-items="Model.Instituicoes">
+                        <option value="">Selecione</option>
+                    </select>
+                    <span asp-validation-for="InstituicaoId"></span>
+                </div>
+                <div class="form-field">
+                    <label asp-for="TipoVinculoId">Tipo de vinculo</label>
+                    <select asp-for="TipoVinculoId" asp-items="Model.TiposVinculo">
+                        <option value="">Selecione</option>
+                    </select>
+                    <span asp-validation-for="TipoVinculoId"></span>
+                </div>
+                <div class="form-field">
+                    <label asp-for="NivelId">Nivel atual</label>
+                    <select asp-for="NivelId" asp-items="Model.Niveis">
+                        <option value="">Selecione</option>
+                    </select>
+                    <span asp-validation-for="NivelId"></span>
+                </div>
+                <div class="form-field">
+                    <label asp-for="DataIngressoInstituicao">Data de ingresso</label>
+                    <input asp-for="DataIngressoInstituicao" type="date" />
+                    <span asp-validation-for="DataIngressoInstituicao"></span>
+                </div>
+                <div class="form-field">
+                    <label asp-for="DataUltimoProgresso">Data da ultima progressao</label>
+                    <input asp-for="DataUltimoProgresso" type="date" />
+                    <span asp-validation-for="DataUltimoProgresso"></span>
+                </div>
+            </div>
+
+            @if (Model.PossuiFoto)
+            {
+                <label class="profile-remove-option">
+                    <input asp-for="RemoverFoto" type="checkbox" />
+                    <span>
+                        <strong>Remover foto atual</strong>
+                        <small>O portal voltara a exibir a inicial do seu nome.</small>
+                    </span>
+                </label>
+            }
+
+            <div class="form-actions">
+                <button class="btn-primary" type="submit">Salvar alteracoes</button>
+                <a class="btn-secondary" asp-controller="ProfessorPortal" asp-action="Dashboard">Cancelar</a>
+            </div>
+        </form>
+    </article>
+</section>
+
+@section Scripts {
+    <script>
+        (function () {
+            const input = document.getElementById('Foto');
+            const preview = document.getElementById('foto-preview');
+
+            input.addEventListener('change', function () {
+                const arquivo = input.files && input.files[0];
+                if (!arquivo) return;
+
+                const url = URL.createObjectURL(arquivo);
+                preview.innerHTML = '';
+
+                const imagem = document.createElement('img');
+                imagem.src = url;
+                imagem.alt = 'Pre-visualizacao da nova foto';
+                imagem.onload = function () { URL.revokeObjectURL(url); };
+                preview.appendChild(imagem);
+            });
+        })();
+    </script>
+}

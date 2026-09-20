@@ -1,0 +1,96 @@
+@model ProgressoAcademico.Application.DTOs.Solicitacoes.SolicitacaoDetalheDto
+@{
+    ViewData["Title"] = "Detalhe da Solicitacao";
+    Layout = "_Layout.Auth";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/pages/professor-portal.css" asp-append-version="true" />
+}
+
+<section class="portal-title">
+    <div>
+        <h1>@(Model.Apelido ?? Model.TipoProgressao)</h1>
+        <p>Solicitacao #@Model.SolicitacaoProgressaoId</p>
+    </div>
+</section>
+
+<partial name="_SolicitacaoNavigation" model="Model.SolicitacaoProgressaoId" />
+
+@if (TempData["Mensagem"] is string mensagem)
+{
+    <div class="alert-success">@mensagem</div>
+}
+@if (TempData["Erro"] is string erro)
+{
+    <div class="validation-summary">@erro</div>
+}
+@if (Model.Status == ProgressoAcademico.Models.StatusSolicitacaoNomes.AjustesSolicitados)
+{
+    <div class="validation-summary">
+        Sua proposta foi avaliada e devolvida para ajustes. Consulte o parecer final e os pareceres das atividades para corrigir os itens indicados.
+    </div>
+}
+else if (Model.Status == ProgressoAcademico.Models.StatusSolicitacaoNomes.Negada)
+{
+    <div class="validation-summary">
+        Sua proposta foi reprovada. O cadastro esta bloqueado para novas alteracoes.
+    </div>
+}
+else if (Model.Status == ProgressoAcademico.Models.StatusSolicitacaoNomes.Aprovada)
+{
+    <div class="alert-success">
+        Sua proposta foi aprovada. O cadastro esta bloqueado para preservar o historico avaliado.
+    </div>
+}
+
+<section class="detail-card">
+    <h2>Dados da progressao</h2>
+    <div class="detail-grid">
+        <div class="detail-item"><span>Status</span><strong>@Model.Status</strong></div>
+        <div class="detail-item"><span>Tipo</span><strong>@Model.TipoProgressao</strong></div>
+        <div class="detail-item"><span>Nivel origem</span><strong>@Model.NivelOrigem</strong></div>
+        <div class="detail-item"><span>Nivel destino</span><strong>@Model.NivelDestino</strong></div>
+        <div class="detail-item"><span>Criacao</span><strong>@Model.DataCriacao.ToString("dd/MM/yyyy")</strong></div>
+        <div class="detail-item"><span>Fechamento</span><strong>@(Model.DataFechamento?.ToString("dd/MM/yyyy") ?? "Em aberto")</strong></div>
+        <div class="detail-item"><span>Atividades</span><strong>@Model.TotalAtividades</strong></div>
+        <div class="detail-item"><span>Documentos</span><strong>@Model.TotalDocumentos</strong></div>
+        <div class="detail-item"><span>Preenchimento</span><strong>@Model.PercentualPreenchimento%</strong></div>
+        <div class="detail-item"><span>Edicao</span><strong>@(Model.PodeEditar ? "Aberta" : "Bloqueada")</strong></div>
+    </div>
+</section>
+
+@if (Model.PodeSubmeter)
+{
+    <section class="institutional-import submit-request-panel">
+        <div>
+            <span class="profile-eyebrow">Envio para análise</span>
+            <h2>@(Model.Status == ProgressoAcademico.Models.StatusSolicitacaoNomes.AjustesSolicitados ? "Reenviar solicitação" : "Submeter solicitação")</h2>
+            <p>Quando os cadastros e comprovantes estiverem conferidos, envie a solicitação para que a administração possa iniciar a análise.</p>
+        </div>
+        <form asp-controller="ProfessorPortal" asp-action="Submeter" asp-route-id="@Model.SolicitacaoProgressaoId" method="post">
+            @Html.AntiForgeryToken()
+            <button class="btn-primary" type="submit">@(Model.Status == ProgressoAcademico.Models.StatusSolicitacaoNomes.AjustesSolicitados ? "Reenviar" : "Submeter")</button>
+        </form>
+    </section>
+}
+
+<section class="institutional-import">
+    <div>
+        <span class="profile-eyebrow">Documentos gerais</span>
+        <h2>Deseja anexar um documento da solicitacao?</h2>
+        <p>Adicione arquivos que complementem o pedido. Os comprovantes especificos continuam vinculados diretamente a cada atividade.</p>
+    </div>
+    <a class="btn-primary" asp-controller="ProfessorDocumentos" asp-action="Index" asp-route-solicitacaoId="@Model.SolicitacaoProgressaoId">Adicionar documento</a>
+</section>
+
+<section class="portal-grid" style="margin-top: 18px;">
+    <article class="detail-card">
+        <h2>Observacao</h2>
+        <p>@(Model.Observacao ?? "Sem observacao registrada.")</p>
+    </article>
+    <article class="detail-card">
+        <h2>Parecer final</h2>
+        <p>@(Model.ParecerFinal ?? "Parecer ainda nao registrado.")</p>
+    </article>
+</section>

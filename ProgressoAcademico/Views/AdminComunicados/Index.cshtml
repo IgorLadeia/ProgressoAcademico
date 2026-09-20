@@ -1,0 +1,64 @@
+@model IReadOnlyCollection<ProgressoAcademico.Application.DTOs.Comunicados.ComunicadoResumoDto>
+@{
+    ViewData["Title"] = "Conteúdo da Home";
+    Layout = "_Layout.Admin";
+}
+
+@if (TempData["Mensagem"] is string mensagem)
+{
+    <div class="alert-success">@mensagem</div>
+}
+
+<section class="admin-title">
+    <div>
+        <h1>Conteúdo da Home</h1>
+        <p>Publique, edite ou retire informações, prazos e notícias exibidos na página pública inicial.</p>
+    </div>
+    <div class="form-actions admin-title-actions">
+        <a class="btn-secondary" asp-controller="Public" asp-action="Index" target="_blank">Visualizar Home</a>
+        <a class="btn-secondary" asp-controller="AdminConteudoHome" asp-action="Editar">Editar apresentação</a>
+        <a class="btn-primary" asp-controller="AdminComunicados" asp-action="Criar">Novo conteúdo</a>
+    </div>
+</section>
+
+<section class="admin-card">
+    <h2>Publicações</h2>
+    @if (Model.Count == 0)
+    {
+        <div class="admin-empty">
+            <strong>Nenhum conteúdo cadastrado</strong>
+            <p>Crie a primeira publicação para atualizar o mural da Home.</p>
+        </div>
+    }
+    else
+    {
+        <div class="table-scroll">
+            <table class="admin-table">
+                <thead>
+                    <tr><th>Status</th><th>Publicação</th><th>Categoria</th><th>Data</th><th>Ações</th></tr>
+                </thead>
+                <tbody>
+                    @foreach (var comunicado in Model)
+                    {
+                        <tr>
+                            <td><span class="status-badge">@(comunicado.Publicado ? "Publicado" : "Rascunho")</span></td>
+                            <td><strong>@comunicado.Titulo</strong><br /><span>@comunicado.Resumo</span></td>
+                            <td>@comunicado.Categoria</td>
+                            <td>@comunicado.DataPublicacao.ToString("dd/MM/yyyy HH:mm")</td>
+                            <td>
+                                <div class="row-actions">
+                                    <a class="btn-secondary" asp-controller="AdminComunicados" asp-action="Editar" asp-route-id="@comunicado.ComunicadoId">Editar</a>
+                                    <form asp-controller="AdminComunicados" asp-action="Excluir" method="post" onsubmit="return confirm('Excluir esta publicação da Home?');">
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="id" value="@comunicado.ComunicadoId" />
+                                        <button class="btn-danger" type="submit">Excluir</button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+</section>

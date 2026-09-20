@@ -1,0 +1,50 @@
+@model ProgressoAcademico.Application.DTOs.Admin.AdminDashboardDto
+@{
+    ViewData["Title"] = "Dashboard do Revisor";
+    Layout = "_Layout.Revisor";
+}
+<section class="admin-title">
+    <div>
+        <h1>Dashboard do revisor</h1>
+        <p>Solicitacoes atribuidas para analise tecnica antes da decisao final do ADM.</p>
+    </div>
+    <a class="btn-primary" asp-controller="RevisorSolicitacoes" asp-action="Index">Revisar solicitacoes</a>
+</section>
+<section class="metric-grid">
+    <article class="metric-card"><span>Total atribuido</span><strong>@Model.TotalSolicitacoes</strong></article>
+    <article class="metric-card"><span>Em revisao</span><strong>@Model.EmRevisao</strong></article>
+    <article class="metric-card"><span>Decisao final</span><strong>@Model.AguardandoDecisaoFinal</strong></article>
+    <article class="metric-card"><span>Ajustes</span><strong>@Model.AjustesSolicitados</strong></article>
+    <article class="metric-card"><span>Atividades</span><strong>@Model.TotalAtividades</strong></article>
+    <article class="metric-card"><span>Documentos</span><strong>@Model.TotalDocumentos</strong></article>
+    <article class="metric-card"><span>Preenchimento medio</span><strong>@Model.PercentualMedioPreenchimento%</strong></article>
+</section>
+<section class="admin-card">
+    <h2>Solicitacoes recentes</h2>
+    <table class="admin-table">
+        <thead><tr><th>ID</th><th>Professor</th><th>Tipo</th><th>Status</th><th>Preenchimento</th><th></th></tr></thead>
+        <tbody>
+        @foreach (var item in Model.Recentes)
+        {
+            <tr>
+                <td>#@item.SolicitacaoProgressaoId</td>
+                <td>@item.Professor<br /><small>@item.EmailProfessor</small></td>
+                <td>@item.TipoProgressao<br />@item.NivelOrigem -> @item.NivelDestino@if (item.Multiprogressao) { <br /><small>Multiprogressao</small> }</td>
+                <td><span class="status-badge status-@StatusClass(item.Status)">@item.Status</span></td>
+                <td>@item.PercentualPreenchimento%</td>
+                <td><a class="btn-secondary" asp-action="Detalhes" asp-route-id="@item.SolicitacaoProgressaoId">Revisar</a></td>
+            </tr>
+        }
+        </tbody>
+    </table>
+</section>
+
+@functions {
+    private static string StatusClass(string status)
+    {
+        return status.ToLowerInvariant()
+            .Replace(" ", "-")
+            .Replace("Ã§", "c")
+            .Replace("Ã£", "a");
+    }
+}

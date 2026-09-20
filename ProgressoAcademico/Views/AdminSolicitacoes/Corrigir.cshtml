@@ -1,0 +1,29 @@
+@model ProgressoAcademico.Models.ViewModels.Admin.AdminCorrigirSolicitacaoViewModel
+@{
+    ViewData["Title"] = "Corrigir Solicitacao";
+    Layout = "_Layout.Admin";
+}
+<section class="admin-title">
+    <div><h1>Corrigir solicitacao</h1><p>Altere dados principais e status quando necessário.</p></div>
+    <a class="btn-secondary" asp-action="Detalhes" asp-route-id="@Model.SolicitacaoProgressaoId">Voltar</a>
+</section>
+<section class="admin-card">
+    <form asp-action="Corrigir" method="post">
+        @Html.AntiForgeryToken()
+        <input asp-for="SolicitacaoProgressaoId" type="hidden" />
+        <div asp-validation-summary="ModelOnly" class="validation-summary"></div>
+        <div class="form-grid">
+            <div class="form-field"><label>Tipo</label><select asp-for="TipoProgressoId" asp-items="Model.TiposProgresso"></select></div>
+            <div class="form-field"><label>Nivel origem</label><select asp-for="NivelOrigemId" asp-items="Model.Niveis"></select></div>
+            <div class="form-field"><label>Nivel destino</label><select asp-for="NivelDestinoId" asp-items="Model.Niveis"></select></div>
+            <div class="form-field"><label>Status</label><select asp-for="Status" asp-items="Model.StatusOpcoes"></select></div>
+            <div class="form-field"><label>Apelido</label><input asp-for="Apelido" /></div>
+            <div class="form-field full"><label>Observacao</label><textarea asp-for="Observacao"></textarea></div>
+            <div class="form-field full"><label>Parecer final</label><textarea asp-for="ParecerFinal"></textarea></div>
+        </div>
+        <div class="form-actions">
+            <button class="btn-primary" type="submit">Salvar correcao</button>
+            <a class="btn-secondary" asp-action="Detalhes" asp-route-id="@Model.SolicitacaoProgressaoId">Cancelar</a>
+        </div>
+    </form>
+</section>

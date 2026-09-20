@@ -1,0 +1,139 @@
+@{
+    ViewData["Title"] = "Projeto";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/pages/public.css" asp-append-version="true" />
+}
+
+<div class="public-page">
+    <div class="public-shell">
+        <div class="public-content">
+            <partial name="_PublicHeader" />
+
+            <section class="project-hero">
+                <span class="eyebrow">Documentação do projeto</span>
+                <h1>Sistema integrado para auxílio na progressão acadêmica dos professores da Universidade Federal do ABC.</h1>
+                <p>
+                    O projeto desenvolve uma aplicação web funcional para organizar solicitações, atividades,
+                    documentos, revisões técnicas e decisão administrativa no processo de progressão acadêmica.
+                </p>
+                <nav class="anchor-nav" aria-label="Seções desta página">
+                    <a href="#contexto">Contexto</a>
+                    <a href="#escopo">Escopo</a>
+                    <a href="#fluxo">Fluxo</a>
+                    <a href="#arquitetura">Arquitetura</a>
+                    <a href="#referencias">Referências</a>
+                    <a href="#repositorio">Repositório</a>
+                </nav>
+            </section>
+
+            <section id="contexto" class="section-block story-section" aria-labelledby="contexto-title">
+                <div class="section-heading">
+                    <span class="eyebrow">Contexto do trabalho</span>
+                    <h2 id="contexto-title">O problema está na fragmentação do processo.</h2>
+                    <p>
+                        A progressão acadêmica depende de normas, prazos, documentos comprobatórios,
+                        atividades registradas, revisão técnica e decisão administrativa. Quando essas etapas
+                        ficam distribuídas em documentos, controles paralelos e comunicações avulsas, o professor
+                        tem mais dificuldade para preparar a solicitação e a administração tem menos visibilidade
+                        sobre o andamento do processo.
+                    </p>
+                </div>
+                <div class="narrative-grid">
+                    <article><span>Problema</span><h3>Informações dispersas</h3><p>Dados do pedido, comprovantes e status podem ficar separados, dificultando acompanhamento e conferência.</p></article>
+                    <article><span>Proposta</span><h3>Fluxo estruturado</h3><p>A aplicação centraliza solicitação, atividades, documentos, revisores, pareceres e decisão final.</p></article>
+                    <article><span>Resultado</span><h3>Sistema funcional</h3><p>Professor, revisor e administrador atuam em áreas próprias, com responsabilidades separadas e registros persistidos.</p></article>
+                </div>
+            </section>
+
+            <section id="escopo" class="section-block scope-section" aria-labelledby="escopo-title">
+                <div class="section-heading compact-heading">
+                    <span class="eyebrow">Escopo funcional</span>
+                    <h2 id="escopo-title">O que o sistema entrega.</h2>
+                </div>
+                <div class="scope-columns">
+                    <article>
+                        <h3>Portal do Professor</h3>
+                        <p>Criação e acompanhamento de solicitações, cadastro de atividades, envio de múltiplos comprovantes, consulta de documentos, perfil funcional e elegibilidade auxiliar.</p>
+                    </article>
+                    <article>
+                        <h3>Portal do Revisor</h3>
+                        <p>Área própria para professores avaliadores consultarem apenas processos atribuídos, analisarem atividades e registrarem parecer técnico sem visualizar avaliações de outros revisores.</p>
+                    </article>
+                    <article>
+                        <h3>Portal Administrativo</h3>
+                        <p>Dashboard, filtros, gestão de usuários, atribuição de múltiplos revisores, consulta de pareceres, solicitação de ajustes e decisão final.</p>
+                    </article>
+                    <article>
+                        <h3>Segurança e dados</h3>
+                        <p>Autenticação, autorização por perfis, senha com hash BCrypt, controle de acesso a documentos, Entity Framework Core, MySQL e tratamento compatível com princípios da LGPD.</p>
+                    </article>
+                </div>
+            </section>
+
+            <section id="fluxo" class="section-block process-section" aria-labelledby="fluxo-title">
+                <div class="section-heading compact-heading">
+                    <span class="eyebrow">Ciclo de vida da solicitação</span>
+                    <h2 id="fluxo-title">Da abertura do pedido à decisão administrativa.</h2>
+                    <p>O fluxo permite ajustes sucessivos. Uma solicitação pode voltar ao professor quando revisores ou administrador identificam pendências documentais.</p>
+                </div>
+                <ol class="process-grid project-process">
+                    <li><span>1</span><strong>Professor</strong><p>Cria a solicitação, informa o tipo de progressão e cadastra atividades.</p></li>
+                    <li><span>2</span><strong>Documentos</strong><p>Anexa comprovantes gerais e arquivos específicos de cada atividade.</p></li>
+                    <li><span>3</span><strong>Administrador</strong><p>Acompanha preenchimento e atribui um ou mais professores revisores.</p></li>
+                    <li><span>4</span><strong>Revisores</strong><p>Avaliam atividades de forma independente e solicitam ajustes quando necessário.</p></li>
+                    <li><span>5</span><strong>Decisão</strong><p>Com os pareceres disponíveis, o administrador aprova, rejeita, encerra ou devolve para correção.</p></li>
+                </ol>
+            </section>
+
+            <section id="arquitetura" class="section-block architecture-section" aria-labelledby="arquitetura-title">
+                <div class="section-heading">
+                    <span class="eyebrow">Engenharia de software</span>
+                    <h2 id="arquitetura-title">Arquitetura em camadas aplicada ao domínio.</h2>
+                    <p>
+                        A implementação separa interface, regras de aplicação e persistência. Essa organização
+                        reduz acoplamento, facilita testes e torna o fluxo de solicitação mais compreensível
+                        dentro do código.
+                    </p>
+                </div>
+                <div class="tech-row" aria-label="Tecnologias principais">
+                    <span>.NET 8</span><span>ASP.NET Core MVC</span><span>Razor Views</span><span>Entity Framework Core</span><span>MySQL</span><span>JWT</span><span>xUnit</span>
+                </div>
+                <div class="architecture-flow" aria-label="Fluxo entre camadas">
+                    <span>Views</span><i aria-hidden="true">→</i><span>Controllers</span><i aria-hidden="true">→</i><span>Services</span><i aria-hidden="true">→</i><span>Repositories</span><i aria-hidden="true">→</i><span>EF Core e MySQL</span>
+                </div>
+            </section>
+
+            <section id="referencias" class="section-block references-section" aria-labelledby="referencias-title">
+                <div class="section-heading">
+                    <span class="eyebrow">Fontes consultadas</span>
+                    <h2 id="referencias-title">Base normativa e técnica.</h2>
+                    <p>
+                        Esta página apresenta apenas referências públicas usadas para contextualizar o trabalho.
+                        Documentos fornecidos pelo orientador ou arquivos pessoais de professores não são
+                        disponibilizados na aplicação.
+                    </p>
+                </div>
+
+                <div class="official-links">
+                    <h3>Fontes institucionais e legais</h3>
+                    <a href="https://www.planalto.gov.br/ccivil_03/_ato2011-2014/2012/lei/l12772.htm" target="_blank" rel="noopener noreferrer">Lei nº 12.772/2012 - Carreira do Magistério Federal</a>
+                    <a href="https://www.planalto.gov.br/ccivil_03/_ato2004-2006/2005/lei/l11145.htm" target="_blank" rel="noopener noreferrer">Lei nº 11.145/2005 - Criação da UFABC</a>
+                    <a href="https://www.planalto.gov.br/ccivil_03/_ato2015-2018/2018/lei/l13709.htm" target="_blank" rel="noopener noreferrer">Lei nº 13.709/2018 - Lei Geral de Proteção de Dados</a>
+                    <a href="https://www.ufabc.edu.br/servidor/portal-do-servidor/plano-de-carreira-do-magisterio-superior" target="_blank" rel="noopener noreferrer">UFABC - Plano de Carreira do Magistério Superior</a>
+                    <a href="https://www.ufabc.edu.br/administracao/conselhos/comissoes-assessoras-consuni/comissao-permanente-de-pessoal-docente-cppd" target="_blank" rel="noopener noreferrer">UFABC - Comissão Permanente de Pessoal Docente</a>
+                </div>
+            </section>
+
+            <section id="repositorio" class="project-contact" aria-labelledby="repositorio-title">
+                <div>
+                    <span class="eyebrow">Código-fonte</span>
+                    <h2 id="repositorio-title">Repositório do desenvolvimento.</h2>
+                    <p>O repositório reúne código, migrations, testes, documentação técnica e evolução do sistema implementado.</p>
+                </div>
+                <a class="btn-primary" href="https://github.com/IgorLadeia/ProgressoAcademico" target="_blank" rel="noopener noreferrer">Abrir repositório no GitHub</a>
+            </section>
+        </div>
+    </div>
+</div>

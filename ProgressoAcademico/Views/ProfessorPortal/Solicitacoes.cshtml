@@ -1,0 +1,36 @@
+@model IReadOnlyCollection<ProgressoAcademico.Application.DTOs.Solicitacoes.SolicitacaoResumoDto>
+@{
+    ViewData["Title"] = "Minhas Solicitacoes";
+    Layout = "_Layout.Auth";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/pages/professor-portal.css" asp-append-version="true" />
+}
+
+<section class="portal-title">
+    <div>
+        <h1>Minhas solicitacoes</h1>
+        <p>Historico de progressoes criadas no portal.</p>
+    </div>
+    <a class="btn-primary" asp-controller="ProfessorPortal" asp-action="Criar">Nova solicitacao</a>
+</section>
+
+<section class="portal-card">
+    @if (Model.Count == 0)
+    {
+        <div class="empty-state">
+            <h2>Nenhuma solicitacao encontrada</h2>
+            <p>Quando uma solicitacao for criada, ela aparecera nesta lista.</p>
+        </div>
+    }
+    else
+    {
+        <div class="request-list">
+            @foreach (var solicitacao in Model)
+            {
+                <partial name="_SolicitacaoResumo" model="solicitacao" />
+            }
+        </div>
+    }
+</section>

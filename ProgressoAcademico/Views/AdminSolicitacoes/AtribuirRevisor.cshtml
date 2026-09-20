@@ -1,0 +1,67 @@
+@model ProgressoAcademico.Models.ViewModels.Admin.AdminAtribuirRevisorViewModel
+@{
+    ViewData["Title"] = "Atribuir Revisor";
+    Layout = "_Layout.Admin";
+}
+<section class="admin-title">
+    <div>
+        <h1>Atribuir revisor</h1>
+        <p>@Model.Professor - solicitacao #@Model.SolicitacaoProgressaoId</p>
+    </div>
+    <a class="btn-secondary" asp-action="Detalhes" asp-route-id="@Model.SolicitacaoProgressaoId">Voltar</a>
+</section>
+<section class="admin-card">
+    <form asp-action="AtribuirRevisor" method="post">
+        @Html.AntiForgeryToken()
+        <input asp-for="SolicitacaoProgressaoId" type="hidden" />
+        <input asp-for="Professor" type="hidden" />
+        <input asp-for="StatusAtual" type="hidden" />
+        <div asp-validation-summary="ModelOnly" class="validation-summary"></div>
+        <div class="detail-grid">
+            <div class="detail-item"><span>Status atual</span><strong>@Model.StatusAtual</strong></div>
+            <div class="detail-item"><span>Professor</span><strong>@Model.Professor</strong></div>
+        </div>
+        <div class="form-field">
+            <label asp-for="RevisorUsuarioIds"></label>
+            <select asp-for="RevisorUsuarioIds" asp-items="Model.Revisores" multiple size="8">
+            </select>
+            <span asp-validation-for="RevisorUsuarioIds" class="text-danger"></span>
+            <small>Use Ctrl para selecionar mais de um revisor.</small>
+        </div>
+        <div class="form-actions">
+            <button class="btn-primary" type="submit">Atribuir</button>
+            <a class="btn-secondary" asp-action="Detalhes" asp-route-id="@Model.SolicitacaoProgressaoId">Cancelar</a>
+        </div>
+    </form>
+</section>
+@if (Model.RevisoresAtribuidos.Count > 0)
+{
+    <section class="admin-card">
+        <h2>Revisores ja atribuidos</h2>
+        <table class="admin-table">
+            <thead><tr><th>Revisor</th><th>Status</th><th>Parecer</th></tr></thead>
+            <tbody>
+            @foreach (var revisor in Model.RevisoresAtribuidos)
+            {
+                <tr>
+                    <td>@revisor.Revisor<br /><small>@revisor.Email</small></td>
+                    <td><span class="status-badge @StatusClass(revisor.StatusRevisao)">@revisor.StatusRevisao</span></td>
+                    <td>@(revisor.Parecer ?? "Sem parecer")</td>
+                </tr>
+            }
+            </tbody>
+    </table>
+</section>
+@functions {
+    private static string StatusClass(string status)
+    {
+        return status switch
+        {
+            "EncaminhadaAoAdm" => "status-aguardando-decisao",
+            "AjustesSolicitados" => "status-ajustes",
+            "EmRevisao" => "status-em-revisao",
+            _ => string.Empty
+        };
+    }
+}
+}

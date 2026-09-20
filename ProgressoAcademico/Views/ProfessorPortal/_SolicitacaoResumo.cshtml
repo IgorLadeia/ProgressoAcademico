@@ -1,0 +1,29 @@
+@model ProgressoAcademico.Application.DTOs.Solicitacoes.SolicitacaoResumoDto
+@functions {
+    private static string StatusClass(string status)
+    {
+        return status.ToLowerInvariant()
+            .Replace(" ", "-")
+            .Replace("ç", "c")
+            .Replace("ã", "a");
+    }
+}
+
+<article class="request-row">
+    <div>
+        <h3>@(Model.Apelido ?? Model.TipoProgressao)</h3>
+        <p>@Model.TipoProgressao | @Model.NivelOrigem -> @Model.NivelDestino</p>
+    </div>
+    <span class="status-badge status-@StatusClass(Model.Status)">@Model.Status</span>
+    <p>@Model.PercentualPreenchimento% preenchido<br />Atualizada em @Model.DataUltimaMovimentacao.ToString("dd/MM/yyyy")</p>
+    <div class="request-actions">
+        <a class="btn-secondary" asp-controller="ProfessorPortal" asp-action="Detalhes" asp-route-id="@Model.SolicitacaoProgressaoId">Detalhes</a>
+        @if (Model.PodeSubmeter)
+        {
+            <form asp-controller="ProfessorPortal" asp-action="Submeter" asp-route-id="@Model.SolicitacaoProgressaoId" method="post">
+                @Html.AntiForgeryToken()
+                <button class="btn-primary" type="submit">@(Model.Status == ProgressoAcademico.Models.StatusSolicitacaoNomes.AjustesSolicitados ? "Reenviar" : "Submeter")</button>
+            </form>
+        }
+    </div>
+</article>

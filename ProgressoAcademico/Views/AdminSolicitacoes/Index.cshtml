@@ -1,0 +1,86 @@
+@model ProgressoAcademico.Models.ViewModels.Admin.AdminSolicitacoesIndexViewModel
+@{
+    ViewData["Title"] = "Solicitacoes Administrativas";
+    Layout = "_Layout.Admin";
+}
+<section class="admin-title">
+    <div><h1>Solicitacoes</h1><p>Filtre, revise e acompanhe todas as solicitacoes dos professores.</p></div>
+    <a class="btn-secondary" asp-action="Dashboard">Dashboard</a>
+</section>
+<section class="admin-card admin-filter-card">
+    <form method="get" asp-action="Index">
+        <div class="filter-grid">
+            <div class="form-field"><label>Status</label><select asp-for="Filtro.Status" name="Status" asp-items="Model.Filtro.StatusOpcoes"><option value="">Todos</option></select></div>
+            <div class="form-field"><label>Professor</label><input asp-for="Filtro.Professor" name="Professor" /></div>
+            <div class="form-field"><label>Tipo</label><select asp-for="Filtro.TipoProgressoId" name="TipoProgressoId" asp-items="Model.Filtro.TiposProgresso"><option value="">Todos</option></select></div>
+            <div class="form-field"><label>Data inicial</label><input asp-for="Filtro.DataInicio" name="DataInicio" type="date" /></div>
+            <div class="form-field"><label>Data final</label><input asp-for="Filtro.DataFim" name="DataFim" type="date" /></div>
+            <div class="form-field"><label>% minimo</label><input asp-for="Filtro.PercentualMinimo" name="PercentualMinimo" type="number" min="0" max="100" /></div>
+            <div class="form-field pending-filter"><label><input asp-for="Filtro.SomentePendentes" name="SomentePendentes" type="checkbox" value="true" /> Somente pendentes</label></div>
+        </div>
+        <div class="form-actions"><button class="btn-primary" type="submit">Filtrar</button><a class="btn-secondary" asp-action="Index">Limpar</a></div>
+    </form>
+</section>
+<section class="admin-card">
+    <h2>Resultados (@Model.Solicitacoes.Count)</h2>
+    <table class="admin-table solicitacoes-table">
+        <thead><tr><th>ID</th><th>Professor</th><th>Tipo</th><th>Revisor</th><th>Status</th><th>Preenchimento</th><th>Itens</th><th></th></tr></thead>
+        <tbody>
+        @foreach (var item in Model.Solicitacoes)
+        {
+            <tr>
+                <td>#@item.SolicitacaoProgressaoId</td>
+                <td>@NomeCurto(item.Professor)<br /><small>@item.EmailProfessor</small></td>
+                <td>@item.TipoProgressao<br />@item.NivelOrigem -> @item.NivelDestino@if (item.Multiprogressao) { <br /><small>Multiprogressao</small> }</td>
+                <td>
+                    @if (string.IsNullOrWhiteSpace(item.Revisor))
+                    {
+                        <span>Nao atribuido</span>
+                    }
+                    else
+                    {
+                        <ul class="reviewer-list">
+                            @foreach (var revisor in Revisores(item.Revisor))
+                            {
+                                <li>@NomeCurto(revisor)</li>
+                            }
+                        </ul>
+                    }
+                </td>
+                <td><span class="status-badge status-@StatusClass(item.Status)">@item.Status</span></td>
+                <td class="fill-cell">@item.PercentualPreenchimento%</td>
+                <td><span class="items-summary">@item.TotalAtividades atividade(s)<br />@item.TotalDocumentos documento(s)</span></td>
+                <td>
+                    <div class="actions-stack">
+                        <a class="btn-secondary" asp-action="Detalhes" asp-route-id="@item.SolicitacaoProgressaoId">Revisar</a>
+                        <a class="btn-secondary" asp-action="AtribuirRevisor" asp-route-id="@item.SolicitacaoProgressaoId">Atribuir</a>
+                    </div>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+</section>
+@functions {
+    private static string StatusClass(string status) => status.ToLowerInvariant().Replace(" ", "-").Replace("ç", "c").Replace("ã", "a");
+
+    private static IReadOnlyList<string> Revisores(string revisores)
+    {
+        return revisores.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+    }
+
+    private static string NomeCurto(string nome)
+    {
+        var ignorar = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+        {
+            "Professor", "Professora", "Prof.", "Profa.", "Dr.", "Dra."
+        };
+        var partes = nome
+            .Split(' ', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+            .Where(p => !ignorar.Contains(p.TrimEnd('.')))
+            .Take(2)
+            .ToList();
+
+        return partes.Count == 0 ? nome : string.Join(' ', partes);
+    }
+}

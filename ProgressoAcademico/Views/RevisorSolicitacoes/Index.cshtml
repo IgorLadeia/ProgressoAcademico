@@ -1,0 +1,40 @@
+@model IReadOnlyList<ProgressoAcademico.Application.DTOs.Admin.AdminSolicitacaoResumoDto>
+@{
+    ViewData["Title"] = "Solicitacoes do Revisor";
+    Layout = "_Layout.Revisor";
+}
+<section class="admin-title">
+    <div>
+        <h1>Solicitacoes atribuidas</h1>
+        <p>Analise apenas os processos encaminhados para seu parecer.</p>
+    </div>
+    <a class="btn-secondary" asp-action="Dashboard">Dashboard</a>
+</section>
+<section class="admin-card">
+    <table class="admin-table">
+        <thead><tr><th>ID</th><th>Professor</th><th>Tipo</th><th>Status</th><th>Itens</th><th></th></tr></thead>
+        <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>#@item.SolicitacaoProgressaoId</td>
+                <td>@item.Professor<br /><small>@item.EmailProfessor</small></td>
+                <td>@item.TipoProgressao<br />@item.NivelOrigem -> @item.NivelDestino@if (item.Multiprogressao) { <br /><small>Multiprogressao</small> }</td>
+                <td><span class="status-badge status-@StatusClass(item.Status)">@item.Status</span></td>
+                <td>@item.TotalAtividades atividade(s)<br />@item.TotalDocumentos documento(s)</td>
+                <td><a class="btn-secondary" asp-action="Detalhes" asp-route-id="@item.SolicitacaoProgressaoId">Revisar</a></td>
+            </tr>
+        }
+        </tbody>
+    </table>
+</section>
+
+@functions {
+    private static string StatusClass(string status)
+    {
+        return status.ToLowerInvariant()
+            .Replace(" ", "-")
+            .Replace("Ã§", "c")
+            .Replace("Ã£", "a");
+    }
+}

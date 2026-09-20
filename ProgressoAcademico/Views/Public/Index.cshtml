@@ -1,0 +1,173 @@
+@model ProgressoAcademico.Models.ViewModels.Publico.HomePublicaViewModel
+@{
+    ViewData["Title"] = "Home";
+    var usuarioAutenticado = User.Identity?.IsAuthenticated == true;
+    var administrador = User.IsInRole(PerfisAcesso.Administrador);
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/pages/public.css" asp-append-version="true" />
+}
+
+<div class="public-page">
+    <div class="public-shell">
+        <div class="public-content">
+            <partial name="_PublicHeader" />
+
+            <section class="split-hero home-hero">
+                <div class="hero-copy">
+                    <span class="eyebrow">Engenharia de Software</span>
+                    <h1>@Model.Conteudo.TituloPrincipal</h1>
+                    <p>@Model.Conteudo.ResumoProjeto</p>
+                    <div class="hero-actions">
+                        @if (!usuarioAutenticado)
+                        {
+                            <a class="btn-primary" asp-controller="Account" asp-action="Login">Acessar plataforma</a>
+                            <a class="btn-secondary" asp-controller="Cadastro" asp-action="Index">Criar conta de professor</a>
+                        }
+                        else if (administrador)
+                        {
+                            <a class="btn-primary" asp-controller="AdminSolicitacoes" asp-action="Dashboard">Ir para o portal administrativo</a>
+                            <a class="btn-secondary" asp-controller="AdminComunicados" asp-action="Index">Editar conteúdo da Home</a>
+                        }
+                        else
+                        {
+                            <a class="btn-primary" asp-controller="ProfessorPortal" asp-action="Dashboard">Ir para o portal do professor</a>
+                        }
+                        <a class="text-link" asp-controller="Public" asp-action="Projeto">Conhecer o projeto</a>
+                    </div>
+                </div>
+
+                <aside class="green-panel home-summary" aria-label="Resumo do produto">
+                    <span class="panel-kicker">Escopo do sistema</span>
+                    <h2>@Model.Conteudo.TituloDestaque</h2>
+                    <ul class="feature-list">
+                        @foreach (var item in Model.Conteudo.ItensDestaque)
+                        {
+                            <li>@item</li>
+                        }
+                    </ul>
+                    <p class="scope-note">@Model.Conteudo.AvisoEscopo</p>
+                </aside>
+            </section>
+
+            <section class="section-block" aria-labelledby="acessos-title">
+                <div class="section-heading">
+                    <span class="eyebrow">Perfis de acesso</span>
+                    <h2 id="acessos-title">Três responsabilidades no mesmo processo.</h2>
+                    <p>O sistema separa preparação, revisão técnica e decisão administrativa para manter o fluxo rastreável e compatível com cada função.</p>
+                </div>
+
+                <div class="access-grid">
+                    <article class="access-panel professor-access">
+                        <span class="access-index">01</span>
+                        <div>
+                            <h3>Professor</h3>
+                            <p>@Model.Conteudo.DescricaoProfessor</p>
+                            <ul class="check-list">
+                                @foreach (var recurso in Model.Conteudo.RecursosProfessor)
+                                {
+                                    <li>@recurso</li>
+                                }
+                            </ul>
+                        </div>
+                    </article>
+
+                    <article class="access-panel reviewer-access">
+                        <span class="access-index">02</span>
+                        <div>
+                            <h3>Revisor</h3>
+                            <p>Professor habilitado para avaliar solicitações encaminhadas pela administração, sem perder acesso às próprias solicitações.</p>
+                            <ul class="check-list">
+                                <li>Visualiza apenas processos atribuídos a ele</li>
+                                <li>Avalia atividades e documentos vinculados</li>
+                                <li>Registra parecer técnico por atividade</li>
+                                <li>Solicita ajustes ou encaminha ao administrador</li>
+                            </ul>
+                        </div>
+                    </article>
+
+                    <article class="access-panel admin-access">
+                        <span class="access-index">03</span>
+                        <div>
+                            <h3>Administrador</h3>
+                            <p>@Model.Conteudo.DescricaoAdministrador</p>
+                            <ul class="check-list">
+                                @foreach (var recurso in Model.Conteudo.RecursosAdministrador)
+                                {
+                                    <li>@recurso</li>
+                                }
+                            </ul>
+                        </div>
+                    </article>
+                </div>
+            </section>
+
+            <section class="section-block process-section" aria-labelledby="processo-title">
+                <div class="section-heading compact-heading">
+                    <span class="eyebrow">Fluxo principal</span>
+                    <h2 id="processo-title">Como a plataforma organiza o processo.</h2>
+                </div>
+                <ol class="process-grid">
+                    <li><span>1</span><strong>Solicitar</strong><p>O professor abre o pedido e informa o tipo de progressão.</p></li>
+                    <li><span>2</span><strong>Documentar</strong><p>Atividades e comprovantes ficam vinculados à solicitação.</p></li>
+                    <li><span>3</span><strong>Atribuir</strong><p>O administrador encaminha o processo a um ou mais revisores.</p></li>
+                    <li><span>4</span><strong>Revisar</strong><p>Os revisores analisam atividades e podem solicitar ajustes.</p></li>
+                    <li><span>5</span><strong>Decidir</strong><p>Com os pareceres disponíveis, o administrador registra o resultado final.</p></li>
+                </ol>
+            </section>
+
+            <section id="comunicados" class="section-block notices-section" aria-labelledby="comunicados-title">
+                <div class="section-heading heading-with-action">
+                    <div>
+                        <span class="eyebrow">Atualizações administráveis</span>
+                        <h2 id="comunicados-title">Informações, prazos e notícias.</h2>
+                        <p>Conteúdo publicado pela administração para manter professores e avaliadores atualizados.</p>
+                    </div>
+                    @if (administrador)
+                    {
+                        <a class="btn-secondary" asp-controller="AdminComunicados" asp-action="Index">Gerenciar Home</a>
+                    }
+                </div>
+
+                <div class="notice-list">
+                    @if (Model.Comunicados.Count == 0)
+                    {
+                        <article class="notice-empty">
+                            <h3>Nenhuma atualização publicada</h3>
+                            <p>Novos avisos da administração serão exibidos neste espaço.</p>
+                        </article>
+                    }
+                    else
+                    {
+                        @foreach (var comunicado in Model.Comunicados)
+                        {
+                            <article class="notice-item">
+                                <div class="notice-meta">
+                                    <span>@comunicado.Categoria</span>
+                                    <time datetime="@comunicado.DataPublicacao.ToString("yyyy-MM-dd")">
+                                        @comunicado.DataPublicacao.ToString("dd/MM/yyyy")
+                                    </time>
+                                </div>
+                                <div class="notice-body">
+                                    <h3>@comunicado.Titulo</h3>
+                                    <p class="notice-summary">@comunicado.Resumo</p>
+                                    <p class="notice-content">@comunicado.Conteudo</p>
+                                </div>
+                            </article>
+                        }
+                    }
+                </div>
+            </section>
+
+            <section class="project-cta" aria-labelledby="project-cta-title">
+                <div>
+                    <span class="eyebrow">Para usuários e avaliadores</span>
+                    <h2 id="project-cta-title">Consulte o escopo técnico e funcional.</h2>
+                    <p>A página do projeto resume problema, objetivos, perfis, fluxo da solicitação, arquitetura e referências usadas no desenvolvimento.</p>
+                </div>
+                <a class="btn-primary" asp-controller="Public" asp-action="Projeto">Explorar o projeto</a>
+            </section>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,92 @@
+@model ProgressoAcademico.Application.DTOs.Admin.AdminSolicitacaoDetalheDto
+@{
+    ViewData["Title"] = "Revisao da Solicitacao";
+    Layout = "_Layout.Revisor";
+
+    var atividades = Model.Atividades.ToList();
+    var documentosGerais = Model.Documentos.Where(d => !d.AtividadeId.HasValue).ToList();
+    var atividadeAvaliadaValor = TempData["AtividadeAvaliadaId"];
+    var atividadeAvaliadaId = atividadeAvaliadaValor is int atividadeIdInteiro
+        ? atividadeIdInteiro
+        : atividadeAvaliadaValor is string atividadeIdTexto && int.TryParse(atividadeIdTexto, out var atividadeId)
+            ? atividadeId
+            : (int?)null;
+}
+<section class="admin-title">
+    <div>
+        <h1>@(Model.Apelido ?? $"Solicitacao #{Model.SolicitacaoProgressaoId}")</h1>
+        <p>@Model.Professor - @Model.EmailProfessor</p>
+    </div>
+    <a class="btn-secondary" asp-action="Index">Voltar</a>
+</section>
+@if (TempData["Mensagem"] is string mensagem) { <div class="alert-success">@mensagem</div> }
+@if (TempData["Erro"] is string erro) { <div class="validation-summary">@erro</div> }
+<section class="detail-card">
+    <h2>Resumo</h2>
+    <div class="detail-grid">
+        <div class="detail-item"><span>Status</span><strong>@Model.Status</strong></div>
+        <div class="detail-item"><span>Tipo</span><strong>@Model.TipoProgressao</strong></div>
+        <div class="detail-item"><span>Niveis</span><strong>@Model.NivelOrigem -> @Model.NivelDestino</strong></div>
+        <div class="detail-item"><span>Multiprogressao</span><strong>@(Model.Multiprogressao ? "Sim" : "Nao")</strong></div>
+        <div class="detail-item"><span>Preenchimento</span><strong>@Model.PercentualPreenchimento%</strong></div>
+        <div class="detail-item"><span>Atribuicao</span><strong>@(Model.DataAtribuicaoRevisor?.ToString("dd/MM/yyyy HH:mm") ?? "Sem data")</strong></div>
+    </div>
+</section>
+<section class="detail-card">
+    <h2>Parecer do revisor</h2>
+    <form method="post">
+        @Html.AntiForgeryToken()
+        <input type="hidden" name="SolicitacaoProgressaoId" value="@Model.SolicitacaoProgressaoId" />
+        <div class="form-field full">
+            <label for="Parecer">Parecer tecnico</label>
+            <textarea id="Parecer" name="Parecer" placeholder="Registre a conclusao da revisao"></textarea>
+        </div>
+        <div class="form-actions">
+            <button class="btn-primary" formaction="@Url.Action("EncaminharAdm", "RevisorSolicitacoes")" type="submit">Encaminhar ao ADM</button>
+            <button class="btn-secondary" formaction="@Url.Action("DevolverProfessor", "RevisorSolicitacoes")" type="submit">Pedir ajustes ao professor</button>
+        </div>
+    </form>
+</section>
+@if (documentosGerais.Count > 0)
+{
+    <section class="detail-card review-block">
+        <div class="review-block-heading">
+            <div>
+                <span class="review-eyebrow">Documentos da solicitacao</span>
+                <h2>Documentos gerais anexados</h2>
+            </div>
+            <span class="status-badge">@documentosGerais.Count documento(s)</span>
+        </div>
+        <div class="admin-evidence-list">
+            @foreach (var documento in documentosGerais)
+            {
+                <a class="admin-evidence" asp-action="DownloadDocumento" asp-route-id="@documento.DocumentoId">
+                    <strong>@documento.NomeArquivo</strong>
+                    <span>@documento.TipoDocumento - Baixar arquivo</span>
+                </a>
+            }
+        </div>
+    </section>
+}
+<section class="detail-card review-block">
+    <div class="review-block-heading">
+        <div>
+            <span class="review-eyebrow">Atividades e comprovantes</span>
+            <h2>Atividades cadastradas</h2>
+            <p>Avalie cada item conforme as evidencias anexadas pelo professor.</p>
+        </div>
+        <span class="status-badge">@atividades.Count atividade(s)</span>
+    </div>
+
+    @if (atividades.Count == 0)
+    {
+        <p>Nenhuma atividade cadastrada.</p>
+    }
+    else
+    {
+        @foreach (var atividade in atividades)
+        {
+            <partial name="~/Views/AdminSolicitacoes/_AvaliacaoAtividade.cshtml" model="@(new ProgressoAcademico.Models.ViewModels.Admin.AdminAtividadeRevisaoViewModel { SolicitacaoProgressaoId = Model.SolicitacaoProgressaoId, Atividade = atividade, Documentos = Model.Documentos.Where(d => d.AtividadeId == atividade.AtividadeId).ToList(), ExibirPareceresRevisores = false, EdicaoDoRevisor = true, DestacarParecerAtual = atividadeAvaliadaId == atividade.AtividadeId })" />
+        }
+    }
+</section>

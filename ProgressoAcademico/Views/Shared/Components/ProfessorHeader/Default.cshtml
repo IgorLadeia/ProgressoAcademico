@@ -1,0 +1,48 @@
+@model ProgressoAcademico.Models.ViewModels.ProfessorPerfil.ProfessorHeaderViewModel
+
+<header class="auth-header">
+    <div class="header-left">
+        <a asp-controller="ProfessorPortal" asp-action="Dashboard" aria-label="Inicio do portal">
+            <img src="~/images/logo-ufabc-oficial.svg" alt="UFABC" class="auth-logo" />
+        </a>
+        <nav class="auth-nav" aria-label="Navegacao do portal">
+            <a asp-controller="ProfessorPortal" asp-action="Dashboard">Dashboard</a>
+            <a asp-controller="ProfessorPortal" asp-action="Solicitacoes">Solicitacoes</a>
+            <a asp-controller="ProfessorPortal" asp-action="Criar">Nova solicitacao</a>
+            @if (User.IsInRole(ProgressoAcademico.Models.PerfisAcesso.Revisor))
+            {
+                <a asp-controller="RevisorSolicitacoes" asp-action="Dashboard">Revisao</a>
+            }
+        </nav>
+    </div>
+
+    <div class="header-right">
+        <a class="user-info profile-link"
+           asp-controller="ProfessorPerfil"
+           asp-action="Editar"
+           aria-label="Editar nome social e foto"
+           title="Editar perfil">
+            <span class="user-avatar" aria-hidden="true">
+                @if (Model.PossuiFoto)
+                {
+                    <img src="@(Model.FotoPerfilUrl ?? Url.Action("Foto", "ProfessorPerfil"))" alt="" />
+                }
+                else
+                {
+                    <img src="@Model.AvatarFallbackUrl" alt="" />
+                }
+            </span>
+            <span class="user-description">
+                <strong>@Model.NomeExibicao</strong>
+                <span class="user-role">@Model.PerfilAcesso</span>
+            </span>
+        </a>
+
+        <div class="user-menu">
+            <form asp-controller="Account" asp-action="Logout" method="post">
+                @Html.AntiForgeryToken()
+                <button type="submit">Sair</button>
+            </form>
+        </div>
+    </div>
+</header>

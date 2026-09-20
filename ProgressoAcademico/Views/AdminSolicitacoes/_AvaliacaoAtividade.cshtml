@@ -1,0 +1,157 @@
+@model ProgressoAcademico.Models.ViewModels.Admin.AdminAtividadeRevisaoViewModel
+@{
+    var avaliacaoAtual = Model.Atividade.AvaliacoesRevisores.FirstOrDefault();
+    var resultadoSelecionado = Model.EdicaoDoRevisor
+        ? avaliacaoAtual?.Resultado
+        : Model.Atividade.Status;
+    var parecerAtual = Model.EdicaoDoRevisor
+        ? avaliacaoAtual?.Parecer
+        : Model.Atividade.ParecerAvaliacao;
+}
+
+<article class="activity-review-card @(Model.DestacarParecerAtual ? "activity-review-card-updated" : string.Empty)" id="atividade-review-@Model.Atividade.AtividadeId">
+    <header>
+        <div>
+            <span class="review-eyebrow">@Model.Atividade.TipoAtividade - @Model.Atividade.SubtipoAtividade</span>
+            <h3>@Model.Atividade.Titulo</h3>
+            <p>@Model.Atividade.DataInicio.ToString("dd/MM/yyyy") - @(((int)Math.Round(Model.Atividade.PontuacaoCalculada, MidpointRounding.AwayFromZero))) pontos</p>
+        </div>
+        <span class="status-badge @StatusClass(Model.Atividade.Status)">@Model.Atividade.Status</span>
+    </header>
+
+    @if (!string.IsNullOrWhiteSpace(Model.Atividade.Descricao))
+    {
+        <p class="review-description">@Model.Atividade.Descricao</p>
+    }
+
+    <section class="review-evidence-panel">
+        <h4>Comprovantes (@Model.Documentos.Count)</h4>
+        @if (Model.Documentos.Count == 0)
+        {
+            <p class="no-evidence">Nenhuma evidencia foi associada a esta atividade.</p>
+        }
+        else
+        {
+            <div class="admin-evidence-list">
+                @foreach (var documento in Model.Documentos)
+                {
+                    <a class="admin-evidence" asp-action="DownloadDocumento" asp-route-id="@documento.DocumentoId">
+                        <strong>@documento.NomeArquivo</strong>
+                        <span>@documento.TipoDocumento - @(documento.TamanhoBytes / 1024) KB - Baixar arquivo</span>
+                    </a>
+                }
+            </div>
+        }
+    </section>
+
+    @if (Model.ExibirPareceresRevisores)
+    {
+        <section class="reviewer-activity-opinions">
+            <h4>Pareceres dos avaliadores</h4>
+            @if (Model.Atividade.AvaliacoesRevisores.Count == 0)
+            {
+                <p class="no-evidence">Nenhum avaliador registrou parecer para esta atividade.</p>
+            }
+            else
+            {
+                <div class="reviewer-opinion-list">
+                    @foreach (var avaliacao in Model.Atividade.AvaliacoesRevisores)
+                    {
+                        <article class="reviewer-opinion-item">
+                            <div>
+                                <strong>@avaliacao.Revisor</strong>
+                                <span>@avaliacao.EmailRevisor</span>
+                            </div>
+                            <span class="status-badge @StatusClass(avaliacao.Resultado)">@avaliacao.Resultado</span>
+                            <p>@avaliacao.Parecer</p>
+                            <small>@avaliacao.DataAvaliacao.ToString("dd/MM/yyyy HH:mm")</small>
+                        </article>
+                    }
+                </div>
+            }
+        </section>
+    }
+    else if (avaliacaoAtual != null)
+    {
+        <div class="current-activity-opinion reviewer-current-opinion @OpinionClass(avaliacaoAtual.Resultado)">
+            <div class="current-opinion-heading">
+                <strong>@(Model.DestacarParecerAtual ? "Avaliacao atualizada agora" : "Seu parecer atual")</strong>
+                <span class="status-badge @StatusClass(avaliacaoAtual.Resultado)">@ResultadoTitulo(avaliacaoAtual.Resultado)</span>
+            </div>
+            <p>@avaliacaoAtual.Parecer</p>
+            <small>Registrada em @avaliacaoAtual.DataAvaliacao.ToString("dd/MM/yyyy HH:mm")</small>
+        </div>
+    }
+
+    @if (!string.IsNullOrWhiteSpace(Model.Atividade.ParecerAvaliacao))
+    {
+        <div class="current-activity-opinion">
+            <strong>Parecer final do ADM</strong>
+            <p>@Model.Atividade.ParecerAvaliacao</p>
+        </div>
+    }
+
+    <form asp-action="AvaliarAtividade" method="post" class="activity-review-form">
+        @Html.AntiForgeryToken()
+        <input type="hidden" name="SolicitacaoProgressaoId" value="@Model.SolicitacaoProgressaoId" />
+        <input type="hidden" name="AtividadeId" value="@Model.Atividade.AtividadeId" />
+        <div class="form-field">
+            <label for="resultado-@Model.Atividade.AtividadeId">Resultado</label>
+            <select id="resultado-@Model.Atividade.AtividadeId" name="Resultado" required>
+                <option value="">Selecione</option>
+                <option value="Aceita" selected="@(resultadoSelecionado == "Aceita")">Atividade aceita</option>
+                <option value="Rejeitada" selected="@(resultadoSelecionado == "Rejeitada")">Atividade nao aceita</option>
+                <option value="SemEvidencia" selected="@(resultadoSelecionado == "SemEvidencia")">Sem evidencias</option>
+            </select>
+        </div>
+        <div class="form-field review-opinion">
+            <label for="parecer-@Model.Atividade.AtividadeId">Parecer da atividade</label>
+            <textarea id="parecer-@Model.Atividade.AtividadeId" name="Parecer" maxlength="1500" required placeholder="Justifique a avaliacao desta atividade">@parecerAtual</textarea>
+        </div>
+        <button class="btn-primary" type="submit">@(Model.EdicaoDoRevisor && avaliacaoAtual != null ? "Atualizar avaliacao" : "Registrar avaliacao")</button>
+    </form>
+</article>
+
+@functions {
+    private static string StatusClass(string? status)
+    {
+        return status switch
+        {
+            "Aceita" => "status-aceita",
+            "Rejeitada" => "status-rejeitada",
+            "SemEvidencia" => "status-sem-evidencia",
+            "Aprovada" => "status-aprovada",
+            "Negada" => "status-negada",
+            "Encerrada" => "status-encerrada",
+            "Em Processamento" => "status-em-processamento",
+            "Em Revisao" => "status-em-revisao",
+            "Aguardando Decisao Final" => "status-aguardando-decisao",
+            "Ajustes Solicitados" => "status-ajustes",
+            "Declarada" => "status-declarada",
+            "Pendente" => "status-pendente",
+            _ => string.Empty
+        };
+    }
+
+    private static string OpinionClass(string? resultado)
+    {
+        return resultado switch
+        {
+            "Aceita" => "opinion-accepted",
+            "Rejeitada" => "opinion-rejected",
+            "SemEvidencia" => "opinion-rejected",
+            _ => string.Empty
+        };
+    }
+
+    private static string ResultadoTitulo(string? resultado)
+    {
+        return resultado switch
+        {
+            "Aceita" => "Atividade aceita",
+            "Rejeitada" => "Atividade nao aceita",
+            "SemEvidencia" => "Sem evidencias",
+            _ => resultado ?? "Sem resultado"
+        };
+    }
+}

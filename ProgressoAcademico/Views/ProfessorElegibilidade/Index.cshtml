@@ -1,0 +1,106 @@
+@model ProgressoAcademico.Application.DTOs.Elegibilidade.ElegibilidadeResultadoDto
+@{
+    ViewData["Title"] = "Elegibilidade";
+    Layout = "_Layout.Auth";
+    var statusExibicao = Model.Status switch
+    {
+        "Elegivel" => "Elegivel",
+        "ElegivelComPendencias" => "Elegivel com pendencias",
+        "NaoElegivel" => "Nao elegivel",
+        _ => Model.Status
+    };
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/pages/professor-portal.css" asp-append-version="true" />
+}
+
+<section class="portal-title">
+    <div>
+        <h1>Elegibilidade auxiliar</h1>
+        <p>Resultado preliminar por requisito. A elegibilidade ocorre somente quando todos os itens forem atendidos.</p>
+    </div>
+</section>
+
+<partial name="_SolicitacaoNavigation" model="Model.SolicitacaoProgressaoId" />
+
+<section class="metric-grid" aria-label="Resumo da elegibilidade">
+    <article class="metric-card metric-card-status">
+        <span>Status</span>
+        <strong>@statusExibicao</strong>
+    </article>
+    <article class="metric-card">
+        <span>Elegibilidade</span>
+        <strong>@Model.PercentualElegibilidade%</strong>
+    </article>
+    <article class="metric-card">
+        <span>Atendidos</span>
+        <strong>@Model.RequisitosAtendidos de @Model.TotalRequisitos</strong>
+    </article>
+    <article class="metric-card">
+        <span>Pendencias</span>
+        <strong>@Model.Pendencias.Count</strong>
+    </article>
+</section>
+
+<section class="portal-grid">
+    <article class="portal-card">
+        <h2>Requisitos avaliados</h2>
+        <p>@Model.RequisitosAtendidos de @Model.TotalRequisitos requisitos atendidos. Percentual atual: @Model.PercentualElegibilidade%.</p>
+        <div class="request-list">
+            @foreach (var requisito in Model.Requisitos)
+            {
+                var textoStatus = requisito.Atendido ? "Atendido" : requisito.Obrigatorio ? "Pendente" : "Opcional";
+                <article class="request-row">
+                    <div>
+                        <h3>@requisito.Nome</h3>
+                        <p>@requisito.Mensagem</p>
+                        @if (!string.IsNullOrWhiteSpace(requisito.Unidade))
+                        {
+                            <small>
+                                Atual: @(((int)Math.Round(requisito.ValorAtual, MidpointRounding.AwayFromZero))) @requisito.Unidade
+                                @if (requisito.Obrigatorio)
+                                {
+                                    <text> · Necessario: @(((int)Math.Round(requisito.ValorMinimo, MidpointRounding.AwayFromZero))) @requisito.Unidade</text>
+                                }
+                                else
+                                {
+                                    <text> · Opcional</text>
+                                }
+                            </small>
+                        }
+                        @if (!requisito.Atendido
+                            && !string.IsNullOrWhiteSpace(requisito.AcaoTexto)
+                            && !string.IsNullOrWhiteSpace(requisito.AcaoController)
+                            && !string.IsNullOrWhiteSpace(requisito.AcaoAction))
+                        {
+                            <div class="inline-actions" style="margin-top: 10px;">
+                                <a class="btn-secondary" asp-controller="@requisito.AcaoController" asp-action="@requisito.AcaoAction">@requisito.AcaoTexto</a>
+                            </div>
+                        }
+                    </div>
+                    <span class="status-badge @(requisito.Atendido ? "status-aprovada" : requisito.Obrigatorio ? "status-em-processamento" : "")">
+                        @textoStatus
+                    </span>
+                </article>
+            }
+        </div>
+    </article>
+
+    <aside class="portal-card">
+        <h2>Pendencias</h2>
+        @if (Model.Pendencias.Count == 0)
+        {
+            <p>Nenhuma pendencia basica encontrada.</p>
+        }
+        else
+        {
+            <ul class="tips-list">
+                @foreach (var pendencia in Model.Pendencias)
+                {
+                    <li>@pendencia</li>
+                }
+            </ul>
+        }
+    </aside>
+</section>

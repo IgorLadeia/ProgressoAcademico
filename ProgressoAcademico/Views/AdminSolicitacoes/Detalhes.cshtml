@@ -1,0 +1,159 @@
+@model ProgressoAcademico.Application.DTOs.Admin.AdminSolicitacaoDetalheDto
+@{
+    ViewData["Title"] = "Revisao Administrativa";
+    Layout = "_Layout.Admin";
+
+    var atividades = Model.Atividades.ToList();
+    var documentosGerais = Model.Documentos.Where(d => !d.AtividadeId.HasValue).ToList();
+}
+<section class="admin-title">
+    <div>
+        <h1>@(Model.Apelido ?? $"Solicitacao #{Model.SolicitacaoProgressaoId}")</h1>
+        <p>@Model.Professor - @Model.EmailProfessor</p>
+    </div>
+    <div class="form-actions">
+        <a class="btn-secondary" asp-action="Index">Voltar</a>
+        <a class="btn-secondary" asp-action="AtribuirRevisor" asp-route-id="@Model.SolicitacaoProgressaoId">Atribuir revisor</a>
+        <a class="btn-secondary" asp-action="Corrigir" asp-route-id="@Model.SolicitacaoProgressaoId">Corrigir</a>
+    </div>
+</section>
+@if (TempData["Mensagem"] is string mensagem) { <div class="alert-success">@mensagem</div> }
+@if (TempData["Erro"] is string erro) { <div class="validation-summary">@erro</div> }
+<section class="detail-card">
+    <h2>Resumo</h2>
+    <div class="detail-grid">
+        <div class="detail-item"><span>Status</span><strong>@Model.Status</strong></div>
+        <div class="detail-item"><span>Tipo</span><strong>@Model.TipoProgressao</strong></div>
+        <div class="detail-item"><span>Niveis</span><strong>@Model.NivelOrigem -> @Model.NivelDestino</strong></div>
+        <div class="detail-item"><span>Multiprogressao</span><strong>@(Model.Multiprogressao ? "Sim" : "Nao")</strong></div>
+        <div class="detail-item"><span>Revisor</span><strong>@(Model.Revisor ?? "Nao atribuido")</strong></div>
+        <div class="detail-item"><span>Preenchimento</span><strong>@Model.PercentualPreenchimento%</strong></div>
+        <div class="detail-item"><span>Criacao</span><strong>@Model.DataCriacao.ToString("dd/MM/yyyy")</strong></div>
+        <div class="detail-item"><span>Revisao final</span><strong>@(Model.DataRevisao?.ToString("dd/MM/yyyy HH:mm") ?? "Sem revisao")</strong></div>
+    </div>
+</section>
+<section class="admin-grid">
+    <article class="detail-card">
+        <h2>Elegibilidade auxiliar</h2>
+        @if (Model.Elegibilidade == null)
+        {
+            <p>Elegibilidade nao calculada.</p>
+        }
+        else
+        {
+            <p><strong>Status:</strong> @Model.Elegibilidade.Status</p>
+            <p><strong>Pendencias:</strong> @Model.Elegibilidade.Pendencias.Count</p>
+            <ul>
+                @foreach (var pendencia in Model.Elegibilidade.Pendencias)
+                {
+                    <li>@pendencia</li>
+                }
+            </ul>
+        }
+    </article>
+    <article class="detail-card">
+        <h2>Revisores</h2>
+        @if (Model.Revisores.Count == 0)
+        {
+            <p>Nenhum revisor atribuido.</p>
+        }
+        else
+        {
+            <ul class="assigned-reviewer-list">
+                @foreach (var revisor in Model.Revisores)
+                {
+                    <li>
+                        <div>
+                            <strong>@revisor.Revisor</strong>
+                            <span>@revisor.Email</span>
+                        </div>
+                        <span class="status-badge @StatusClass(revisor.StatusRevisao)">@revisor.StatusRevisao</span>
+                        @if (!string.IsNullOrWhiteSpace(revisor.Parecer))
+                        {
+                            <p>@revisor.Parecer</p>
+                            <small>@(revisor.DataParecer?.ToString("dd/MM/yyyy HH:mm") ?? "Sem data")</small>
+                        }
+                    </li>
+                }
+            </ul>
+        }
+    </article>
+    <article class="detail-card">
+        <h2>Parecer final</h2>
+        <p>@(Model.ParecerFinal ?? "Nenhum parecer registrado.")</p>
+        <p><strong>Revisado por:</strong> @(Model.RevisadoPor ?? "Sem decisao final")</p>
+    </article>
+</section>
+
+@functions {
+    private static string StatusClass(string status)
+    {
+        return status switch
+        {
+            "EncaminhadaAoAdm" => "status-aguardando-decisao",
+            "AjustesSolicitados" => "status-ajustes",
+            "EmRevisao" => "status-em-revisao",
+            _ => string.Empty
+        };
+    }
+}
+<section class="detail-card">
+    <h2>Decisao administrativa</h2>
+    <form method="post">
+        @Html.AntiForgeryToken()
+        <input type="hidden" name="SolicitacaoProgressaoId" value="@Model.SolicitacaoProgressaoId" />
+        <div class="form-field full">
+            <label for="Parecer">Parecer administrativo</label>
+            <textarea id="Parecer" name="Parecer" placeholder="Registre o parecer que justifica a decisao"></textarea>
+        </div>
+        <div class="form-actions">
+            <button class="btn-primary" formaction="@Url.Action("Aprovar", "AdminSolicitacoes")" type="submit">Aprovar</button>
+            <button class="btn-danger" formaction="@Url.Action("Reprovar", "AdminSolicitacoes")" type="submit">Reprovar</button>
+            <button class="btn-secondary" formaction="@Url.Action("SolicitarAjustes", "AdminSolicitacoes")" type="submit">Solicitar ajustes</button>
+        </div>
+    </form>
+</section>
+@if (documentosGerais.Count > 0)
+{
+    <section class="detail-card review-block">
+        <div class="review-block-heading">
+            <div>
+                <span class="review-eyebrow">Documentos da solicitacao</span>
+                <h2>Documentos gerais anexados</h2>
+                <p>Arquivos vinculados ao pedido como um todo, sem gerar cadastro automatico de atividades.</p>
+            </div>
+            <span class="status-badge">@documentosGerais.Count documento(s)</span>
+        </div>
+        <div class="admin-evidence-list">
+            @foreach (var documento in documentosGerais)
+            {
+                <a class="admin-evidence" asp-action="DownloadDocumento" asp-route-id="@documento.DocumentoId">
+                    <strong>@documento.NomeArquivo</strong>
+                    <span>@documento.TipoDocumento - Baixar arquivo</span>
+                </a>
+            }
+        </div>
+    </section>
+}
+<section class="detail-card review-block">
+    <div class="review-block-heading">
+        <div>
+            <span class="review-eyebrow">Cadastro do professor</span>
+            <h2>Atividades cadastradas</h2>
+            <p>Avalie cada declaracao e seus respectivos comprovantes.</p>
+        </div>
+        <span class="status-badge">@atividades.Count atividade(s)</span>
+    </div>
+
+    @if (atividades.Count == 0)
+    {
+        <p>Nenhuma atividade cadastrada.</p>
+    }
+    else
+    {
+        @foreach (var atividade in atividades)
+        {
+            <partial name="_AvaliacaoAtividade" model="@(new ProgressoAcademico.Models.ViewModels.Admin.AdminAtividadeRevisaoViewModel { SolicitacaoProgressaoId = Model.SolicitacaoProgressaoId, Atividade = atividade, Documentos = Model.Documentos.Where(d => d.AtividadeId == atividade.AtividadeId).ToList() })" />
+        }
+    }
+</section>

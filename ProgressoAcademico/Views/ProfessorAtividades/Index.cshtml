@@ -1,0 +1,343 @@
+@model ProgressoAcademico.Models.ViewModels.Atividades.AtividadesSolicitacaoViewModel
+@using ProgressoAcademico.Models
+@{
+    ViewData["Title"] = $"Atividades de {Model.GrupoAtual}";
+    Layout = "_Layout.Auth";
+    var orientacaoTipo = OrientacaoTipo(Model.GrupoAtual);
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/pages/professor-portal.css" asp-append-version="true" />
+}
+
+<section class="portal-title">
+    <div>
+        <h1>@Model.GrupoAtual</h1>
+        <p>Cadastre as atividades desta categoria e mantenha os comprovantes vinculados a cada registro.</p>
+    </div>
+</section>
+
+<partial name="_SolicitacaoNavigation" model="Model.Solicitacao.SolicitacaoProgressaoId" />
+
+@if (TempData["Mensagem"] is string mensagem)
+{
+    <div class="alert-success">@mensagem</div>
+}
+@if (TempData["Erro"] is string erro)
+{
+    <div class="validation-summary">@erro</div>
+}
+@if (Model.Solicitacao.Status == StatusSolicitacaoNomes.AjustesSolicitados)
+{
+    <div class="validation-summary">
+        A avaliação solicitou ajustes nesta solicitacao. Revise os pareceres, corrija ou exclua os itens indicados e salve as alteracoes para reenviar a solicitacao.
+    </div>
+}
+
+<section class="portal-card activity-create-card">
+    <h2>Cadastrar atividade de @Model.GrupoAtual.ToLowerInvariant()</h2>
+    <div class="activity-type-guidance">
+        <strong>@orientacaoTipo.Titulo</strong>
+        <p>@orientacaoTipo.Descricao</p>
+    </div>
+    @if (!Model.Solicitacao.PodeEditar)
+    {
+        <p>Esta solicitação está bloqueada para edição.</p>
+    }
+    else
+    {
+        <form asp-controller="ProfessorAtividades" asp-action="Criar" method="post" enctype="multipart/form-data">
+            @Html.AntiForgeryToken()
+            <input name="SolicitacaoProgressaoId" value="@Model.Formulario.SolicitacaoProgressaoId" type="hidden" />
+            <input name="Grupo" value="@Model.GrupoAtual" type="hidden" />
+
+            <div class="form-grid">
+                <div class="form-field full">
+                    <label for="SubTipoAtividadeId">Tipo de atividade</label>
+                    <select id="SubTipoAtividadeId" name="SubTipoAtividadeId" asp-items="Model.Formulario.SubtiposAtividade">
+                        <option value="">Selecione</option>
+                    </select>
+                </div>
+                <div class="form-field full">
+                    <label for="Titulo">Título</label>
+                    <input id="Titulo" name="Titulo" placeholder="Descreva a atividade realizada" />
+                </div>
+                <div class="form-field">
+                    <label for="DataInicio">Data de início</label>
+                    <input id="DataInicio" name="DataInicio" type="date" />
+                </div>
+                <div class="form-field">
+                    <label for="DataTermino">Data de término</label>
+                    <input id="DataTermino" name="DataTermino" type="date" />
+                </div>
+                <div class="form-field">
+                    <label for="Quantidade">Quantidade</label>
+                    <input id="Quantidade" name="Quantidade" type="number" step="1" min="1" value="1" />
+                </div>
+                <div class="form-field full">
+                    <label for="Descricao">Descrição</label>
+                    <textarea id="Descricao" name="Descricao" placeholder="Informe os dados necessários para identificar e conferir a atividade"></textarea>
+                    <small class="form-help">Forneça informações suficientes para validação. Em pesquisa, dê preferência a DOI, ISSN, ISBN, veículo de publicação, número do projeto ou agência de fomento quando houver.</small>
+                </div>
+            </div>
+
+            <div class="initial-evidence">
+                <div class="section-heading compact">
+                    <div>
+                        <h3>Documentos comprobatórios</h3>
+                        <p>Recomendado. Os arquivos ficarão diretamente associados a esta atividade.</p>
+                    </div>
+                    <span class="status-badge">PDF - ate 10 MB cada</span>
+                </div>
+                <div class="evidence-form initial">
+                    <div class="form-field evidence-file">
+                        <label for="Comprovantes">Comprovantes da atividade</label>
+                        <input id="Comprovantes" name="Comprovantes" type="file" accept="application/pdf,.pdf" multiple />
+                        <small>Selecione um ou mais arquivos PDF para esta atividade.</small>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <button class="btn-primary" type="submit">Cadastrar atividade</button>
+            </div>
+        </form>
+    }
+</section>
+
+<section class="activity-section">
+    <div class="section-heading">
+        <div>
+            <h2>Atividades cadastradas</h2>
+            <p>Cada atividade pode possuir nenhum, um ou vários comprovantes em PDF.</p>
+        </div>
+        <span class="status-badge">@Model.Atividades.Count registro(s)</span>
+    </div>
+
+    @if (Model.Atividades.Count == 0)
+    {
+        <div class="empty-state">
+            <h2>Nenhuma atividade de @Model.GrupoAtual.ToLowerInvariant()</h2>
+            <p>Use o formulário acima para registrar a primeira atividade desta categoria.</p>
+        </div>
+    }
+    else
+    {
+        <div class="activity-list">
+            @foreach (var atividade in Model.Atividades)
+            {
+                var comprovantes = Model.Documentos.Where(d => d.AtividadeId == atividade.AtividadeId).ToList();
+                <article class="activity-card">
+                    <header class="activity-card-header">
+                        <div>
+                            <span class="profile-eyebrow">@atividade.SubtipoAtividade</span>
+                            <h3>@atividade.Titulo</h3>
+                            <p>@atividade.DataInicio.ToString("dd/MM/yyyy") · @(((int)Math.Round(atividade.PontuacaoCalculada, MidpointRounding.AwayFromZero))) pontos</p>
+                        </div>
+                        <span class="status-badge status-@StatusClass(atividade.Status)">@atividade.Status</span>
+                        @if (Model.Solicitacao.PodeEditar)
+                        {
+                            <form asp-controller="ProfessorAtividades" asp-action="Excluir" method="post">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="id" value="@atividade.AtividadeId" />
+                                <input type="hidden" name="solicitacaoId" value="@Model.Solicitacao.SolicitacaoProgressaoId" />
+                                <input type="hidden" name="grupo" value="@Model.GrupoAtual" />
+                                <button class="btn-danger" type="submit">Excluir atividade</button>
+                            </form>
+                        }
+                    </header>
+
+                    @if (!string.IsNullOrWhiteSpace(atividade.Descricao))
+                    {
+                        <p class="activity-description">@atividade.Descricao</p>
+                    }
+
+                    @if (!string.IsNullOrWhiteSpace(atividade.ParecerAvaliacao))
+                    {
+                        <div class="current-activity-opinion professor-opinion">
+                            <strong>Parecer da avaliação</strong>
+                            <p>@atividade.ParecerAvaliacao</p>
+                            @if (atividade.DataAvaliacao.HasValue)
+                            {
+                                <small>Avaliada em @atividade.DataAvaliacao.Value.ToString("dd/MM/yyyy HH:mm")</small>
+                            }
+                        </div>
+                    }
+
+                    @if (atividade.AvaliacoesRevisores.Count > 0)
+                    {
+                        <div class="review-feedback-list">
+                            <strong>Avaliações dos revisores</strong>
+                            @foreach (var avaliacao in atividade.AvaliacoesRevisores)
+                            {
+                                <article class="review-feedback review-feedback-@ResultadoClass(avaliacao.Resultado)">
+                                    <div class="review-feedback-header">
+                                        <span class="status-badge status-@StatusClass(avaliacao.Resultado)">@ResultadoTitulo(avaliacao.Resultado)</span>
+                                        <small>@avaliacao.Revisor - @avaliacao.DataAvaliacao.ToString("dd/MM/yyyy HH:mm")</small>
+                                    </div>
+                                    <p>@avaliacao.Parecer</p>
+                                </article>
+                            }
+                        </div>
+                    }
+
+                    @if (Model.Solicitacao.PodeEditar)
+                    {
+                        <details class="activity-correction-panel" @(atividade.Status is "Rejeitada" or "SemEvidencia" ? "open" : null)>
+                            <summary>Corrigir atividade</summary>
+                            <form asp-controller="ProfessorAtividades" asp-action="Editar" method="post">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="AtividadeId" value="@atividade.AtividadeId" />
+                                <input type="hidden" name="SolicitacaoProgressaoId" value="@Model.Solicitacao.SolicitacaoProgressaoId" />
+                                <input type="hidden" name="Grupo" value="@Model.GrupoAtual" />
+                                <div class="form-grid">
+                                    <div class="form-field full">
+                                        <label for="subtipo-editar-@atividade.AtividadeId">Tipo de atividade</label>
+                                        <select id="subtipo-editar-@atividade.AtividadeId" name="SubTipoAtividadeId">
+                                            <option value="">Selecione</option>
+                                            @foreach (var opcao in Model.Formulario.SubtiposAtividade)
+                                            {
+                                                <option value="@opcao.Value" selected="@(opcao.Value == atividade.SubTipoAtividadeId.ToString())">@opcao.Text</option>
+                                            }
+                                        </select>
+                                    </div>
+                                    <div class="form-field full">
+                                        <label for="titulo-editar-@atividade.AtividadeId">Titulo</label>
+                                        <input id="titulo-editar-@atividade.AtividadeId" name="Titulo" value="@atividade.Titulo" />
+                                    </div>
+                                    <div class="form-field">
+                                        <label for="inicio-editar-@atividade.AtividadeId">Data de inicio</label>
+                                        <input id="inicio-editar-@atividade.AtividadeId" name="DataInicio" type="date" value="@atividade.DataInicio.ToString("yyyy-MM-dd")" />
+                                    </div>
+                                    <div class="form-field">
+                                        <label for="termino-editar-@atividade.AtividadeId">Data de termino</label>
+                                        <input id="termino-editar-@atividade.AtividadeId" name="DataTermino" type="date" value="@(atividade.DataTermino?.ToString("yyyy-MM-dd"))" />
+                                    </div>
+                                    <div class="form-field">
+                                        <label for="quantidade-editar-@atividade.AtividadeId">Quantidade</label>
+                                        <input id="quantidade-editar-@atividade.AtividadeId" name="Quantidade" type="number" step="1" min="1" value="@(((int)Math.Round(atividade.Quantidade, MidpointRounding.AwayFromZero)).ToString(System.Globalization.CultureInfo.InvariantCulture))" />
+                                    </div>
+                                    <div class="form-field full">
+                                        <label for="descricao-editar-@atividade.AtividadeId">Descricao</label>
+                                        <textarea id="descricao-editar-@atividade.AtividadeId" name="Descricao">@atividade.Descricao</textarea>
+                                        <small class="form-help">Forneça informações suficientes para validação. Em pesquisa, dê preferência a DOI, ISSN, ISBN, veículo de publicação, número do projeto ou agência de fomento quando houver.</small>
+                                    </div>
+                                </div>
+                                <div class="form-actions">
+                                    <button class="btn-primary" type="submit">Salvar correcao</button>
+                                </div>
+                            </form>
+                        </details>
+                    }
+
+                    <div class="evidence-panel">
+                        <div class="section-heading compact">
+                            <div>
+                                <h4>Comprovantes</h4>
+                                <p>O anexo é recomendado para sustentar a atividade declarada.</p>
+                            </div>
+                            <span>@comprovantes.Count arquivo(s)</span>
+                        </div>
+
+                        @if (comprovantes.Count > 0)
+                        {
+                            <div class="evidence-list">
+                                @foreach (var documento in comprovantes)
+                                {
+                                    <div class="evidence-row">
+                                        <div>
+                                            <strong>@documento.NomeArquivo</strong>
+                                            <span>@documento.TipoDocumento · @(documento.TamanhoBytes / 1024) KB</span>
+                                        </div>
+                                        <div class="inline-actions">
+                                            <a class="btn-secondary" asp-controller="ProfessorDocumentos" asp-action="Download" asp-route-id="@documento.DocumentoId">Baixar</a>
+                                            @if (Model.Solicitacao.PodeEditar)
+                                            {
+                                                <form asp-controller="ProfessorDocumentos" asp-action="Excluir" method="post">
+                                                    @Html.AntiForgeryToken()
+                                                    <input type="hidden" name="id" value="@documento.DocumentoId" />
+                                                    <input type="hidden" name="solicitacaoId" value="@Model.Solicitacao.SolicitacaoProgressaoId" />
+                                                    <input type="hidden" name="retornoGrupo" value="@Model.GrupoAtual" />
+                                                    <button class="btn-danger" type="submit">Excluir</button>
+                                                </form>
+                                            }
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                        }
+
+                        @if (Model.Solicitacao.PodeEditar)
+                        {
+                            <form class="evidence-form" asp-controller="ProfessorDocumentos" asp-action="Upload" method="post" enctype="multipart/form-data">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="SolicitacaoProgressaoId" value="@Model.Solicitacao.SolicitacaoProgressaoId" />
+                                <input type="hidden" name="AtividadeId" value="@atividade.AtividadeId" />
+                                <input type="hidden" name="OrigemDocumento" value="@OrigensDocumento.ComprovatorioProfessor" />
+                                <input type="hidden" name="RetornoGrupo" value="@Model.GrupoAtual" />
+                                <div class="form-field evidence-file">
+                                    <label for="arquivo-@atividade.AtividadeId">Arquivos PDF</label>
+                                    <input id="arquivo-@atividade.AtividadeId" name="Arquivos" type="file" accept="application/pdf,.pdf" multiple />
+                                    <small>É possível anexar vários arquivos PDF nesta atividade.</small>
+                                </div>
+                                <button class="btn-primary" type="submit">Anexar comprovantes</button>
+                            </form>
+                        }
+                    </div>
+                </article>
+            }
+        </div>
+    }
+</section>
+
+@functions {
+    private static string StatusClass(string status)
+    {
+        return status switch
+        {
+            "Aceita" => "aceita",
+            "Rejeitada" => "rejeitada",
+            "SemEvidencia" => "sem-evidencia",
+            "Declarada" => "declarada",
+            "Pendente" => "pendente",
+            _ => status.ToLowerInvariant()
+                .Replace(" ", "-")
+                .Replace("Ã§", "c")
+                .Replace("Ã£", "a")
+        };
+    }
+
+    private static string ResultadoClass(string resultado)
+    {
+        return resultado switch
+        {
+            "Aceita" => "aceita",
+            "Rejeitada" => "rejeitada",
+            "SemEvidencia" => "sem-evidencia",
+            _ => "pendente"
+        };
+    }
+
+    private static string ResultadoTitulo(string resultado)
+    {
+        return resultado switch
+        {
+            "Aceita" => "Aceita",
+            "Rejeitada" => "Rejeitada",
+            "SemEvidencia" => "Sem evidência",
+            _ => resultado
+        };
+    }
+
+    private static (string Titulo, string Descricao) OrientacaoTipo(string grupo)
+    {
+        return grupo switch
+        {
+            "Ensino" => ("Dados esperados para ensino", "Informe disciplina, turma, periodo, carga horaria, quantidade de alunos ou orientandos quando esses dados estiverem no comprovante."),
+            "Pesquisa" => ("Dados esperados para pesquisa", "Informe tipo de producao, veiculo de publicacao, DOI, ISSN, ISBN, numero do projeto ou agencia de fomento quando existir."),
+            "Extensão" or "Extensao" => ("Dados esperados para extensao", "Informe nome do projeto, publico atendido, carga horaria, periodo de realizacao e registro institucional quando existir."),
+            "Gestão" or "Gestao" => ("Dados esperados para gestao", "Informe cargo, unidade, portaria ou ato de designacao, periodo de exercicio e funcao desempenhada."),
+            _ => ("Dados esperados", "Informe os dados que permitam identificar a atividade e confira se o comprovante confirma as informacoes declaradas.")
+        };
+    }
+}

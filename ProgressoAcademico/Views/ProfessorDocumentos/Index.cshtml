@@ -1,0 +1,112 @@
+@model ProgressoAcademico.Models.ViewModels.Documentos.DocumentosSolicitacaoViewModel
+@using ProgressoAcademico.Models
+@{
+    ViewData["Title"] = "Documentos da solicitacao";
+    Layout = "_Layout.Auth";
+    var documentosGerais = Model.Documentos
+        .Where(d => d.OrigemDocumento != OrigensDocumento.ComprovatorioProfessor && !d.AtividadeId.HasValue)
+        .ToList();
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/pages/professor-portal.css" asp-append-version="true" />
+}
+
+<section class="portal-title">
+    <div>
+        <h1>Documentos da solicitacao</h1>
+        <p>Envie documentos gerais que complementem o pedido de progressao.</p>
+    </div>
+    <a class="btn-secondary" asp-controller="ProfessorPortal" asp-action="Detalhes" asp-route-id="@Model.Solicitacao.SolicitacaoProgressaoId">Voltar</a>
+</section>
+
+@if (TempData["Mensagem"] is string mensagem)
+{
+    <div class="alert-success">@mensagem</div>
+}
+@if (TempData["Erro"] is string erro)
+{
+    <div class="validation-summary">@erro</div>
+}
+
+<section class="portal-grid">
+    <article class="portal-card">
+        <h2>Adicionar documento geral</h2>
+        @if (!Model.Solicitacao.PodeEditar)
+        {
+            <p>Esta solicitacao esta bloqueada para edicao.</p>
+        }
+        else
+        {
+            <form asp-controller="ProfessorDocumentos" asp-action="Upload" method="post" enctype="multipart/form-data">
+                @Html.AntiForgeryToken()
+                <input name="SolicitacaoProgressaoId" value="@Model.Upload.SolicitacaoProgressaoId" type="hidden" />
+                <input name="OrigemDocumento" value="@OrigensDocumento.DocumentoOficialUfabc" type="hidden" />
+                <div class="form-grid">
+                    <div class="form-field full">
+                        <label for="TipoDocumentoId">Tipo</label>
+                        <select id="TipoDocumentoId" name="TipoDocumentoId" asp-items="Model.Upload.TiposDocumento">
+                            <option value="">Selecione</option>
+                        </select>
+                    </div>
+                    <div class="form-field full">
+                        <label for="Arquivos">Arquivos PDF</label>
+                        <input id="Arquivos" name="Arquivos" type="file" accept="application/pdf,.pdf" multiple />
+                        <small>Selecione um ou mais arquivos PDF para anexar ao pedido.</small>
+                    </div>
+                    <div class="form-field full">
+                        <label for="Observacao">Observacao</label>
+                        <textarea id="Observacao" name="Observacao" placeholder="Identifique o documento ou o periodo de referencia"></textarea>
+                    </div>
+                </div>
+                <div class="form-actions">
+                    <button class="btn-primary" type="submit">Anexar documento</button>
+                </div>
+            </form>
+        }
+    </article>
+
+    <aside class="portal-card">
+        <h2>Uso do documento</h2>
+        <p>Este arquivo fica associado ao pedido como documento geral. As evidencias especificas continuam vinculadas diretamente a cada atividade.</p>
+    </aside>
+</section>
+
+<section class="portal-card" style="margin-top: 18px;">
+    <h2>Documentos gerais</h2>
+    @if (documentosGerais.Count == 0)
+    {
+        <div class="empty-state">
+            <h2>Nenhum documento geral anexado</h2>
+            <p>As evidencias de cada atividade podem ser anexadas na tela de atividades.</p>
+        </div>
+    }
+    else
+    {
+        <div class="request-list">
+            @foreach (var documento in documentosGerais)
+            {
+                <article class="request-row">
+                    <div>
+                        <h3>@documento.NomeArquivo</h3>
+                        <p>@documento.TipoDocumento</p>
+                    </div>
+                    <p>@(documento.TamanhoBytes / 1024) KB</p>
+                    <p>@documento.DataUpload.ToString("dd/MM/yyyy HH:mm")</p>
+                    <div class="inline-actions">
+                        <a class="btn-secondary" asp-controller="ProfessorDocumentos" asp-action="Download" asp-route-id="@documento.DocumentoId">Baixar</a>
+                        @if (Model.Solicitacao.PodeEditar)
+                        {
+                            <form asp-controller="ProfessorDocumentos" asp-action="Excluir" method="post">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="id" value="@documento.DocumentoId" />
+                                <input type="hidden" name="solicitacaoId" value="@Model.Solicitacao.SolicitacaoProgressaoId" />
+                                <button class="btn-danger" type="submit">Excluir</button>
+                            </form>
+                        }
+                    </div>
+                </article>
+            }
+        </div>
+    }
+</section>

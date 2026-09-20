@@ -1,0 +1,86 @@
+@model ProgressoAcademico.Models.ViewModels.ConteudoHome.ConteudoHomeEdicaoViewModel
+@{
+    ViewData["Title"] = "Editar apresentação da Home";
+    Layout = "_Layout.Admin";
+}
+
+<section class="admin-title">
+    <div>
+        <h1>Editar apresentação da Home</h1>
+        <p>Atualize o resumo principal, o destaque e a apresentação dos perfis de acesso.</p>
+    </div>
+</section>
+
+<section class="admin-card content-form-card">
+    <form asp-controller="AdminConteudoHome" asp-action="Editar" method="post">
+        @Html.AntiForgeryToken()
+        <div asp-validation-summary="ModelOnly" class="validation-summary"></div>
+
+        <div class="form-section-title">
+            <h2>Apresentação principal</h2>
+            <p>Este conteúdo aparece no primeiro bloco da página.</p>
+        </div>
+        <div class="form-grid">
+            <div class="form-field full">
+                <label asp-for="TituloPrincipal">Título principal</label>
+                <input asp-for="TituloPrincipal" />
+                <span asp-validation-for="TituloPrincipal"></span>
+            </div>
+            <div class="form-field full">
+                <label asp-for="ResumoProjeto">Resumo do projeto</label>
+                <textarea asp-for="ResumoProjeto"></textarea>
+                <span asp-validation-for="ResumoProjeto"></span>
+            </div>
+            <div class="form-field full">
+                <label asp-for="TituloDestaque">Título do destaque</label>
+                <input asp-for="TituloDestaque" />
+                <span asp-validation-for="TituloDestaque"></span>
+            </div>
+            <div class="form-field full">
+                <label asp-for="ItensDestaque">Itens de destaque</label>
+                <textarea asp-for="ItensDestaque" class="list-textarea"></textarea>
+                <small>Informe um item por linha.</small>
+                <span asp-validation-for="ItensDestaque"></span>
+            </div>
+            <div class="form-field full">
+                <label asp-for="AvisoEscopo">Aviso de escopo</label>
+                <textarea asp-for="AvisoEscopo" class="short-textarea"></textarea>
+                <span asp-validation-for="AvisoEscopo"></span>
+            </div>
+        </div>
+
+        <div class="form-section-title separated">
+            <h2>Perfis de acesso</h2>
+            <p>Apresente as responsabilidades e os principais recursos de cada perfil.</p>
+        </div>
+        <div class="form-grid">
+            <div class="form-field full">
+                <label asp-for="DescricaoProfessor">Descrição do Professor</label>
+                <textarea asp-for="DescricaoProfessor" class="short-textarea"></textarea>
+                <span asp-validation-for="DescricaoProfessor"></span>
+            </div>
+            <div class="form-field full">
+                <label asp-for="RecursosProfessor">Recursos do Professor</label>
+                <textarea asp-for="RecursosProfessor" class="list-textarea"></textarea>
+                <small>Informe um recurso por linha.</small>
+                <span asp-validation-for="RecursosProfessor"></span>
+            </div>
+            <div class="form-field full">
+                <label asp-for="DescricaoAdministrador">Descrição do Administrador</label>
+                <textarea asp-for="DescricaoAdministrador" class="short-textarea"></textarea>
+                <span asp-validation-for="DescricaoAdministrador"></span>
+            </div>
+            <div class="form-field full">
+                <label asp-for="RecursosAdministrador">Recursos do Administrador</label>
+                <textarea asp-for="RecursosAdministrador" class="list-textarea"></textarea>
+                <small>Informe um recurso por linha.</small>
+                <span asp-validation-for="RecursosAdministrador"></span>
+            </div>
+        </div>
+
+        <div class="form-actions">
+            <button class="btn-primary" type="submit">Atualizar apresentação</button>
+            <a class="btn-secondary" asp-controller="AdminComunicados" asp-action="Index">Cancelar</a>
+        </div>
+    </form>
+</section>

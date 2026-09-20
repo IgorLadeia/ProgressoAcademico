@@ -1,0 +1,14 @@
+@{
+    var activePage = ViewData["ActivePage"] as string ?? string.Empty;
+}
+
+<header class="brand">
+    <a asp-controller="Public" asp-action="Index" aria-label="Inicio">
+        <img src="~/images/logo-ufabc-oficial.svg" alt="UFABC" class="brand-logo" />
+    </a>
+    <nav class="brand-nav" aria-label="Navegacao principal">
+        <a class="@(activePage == "Home" ? "active" : null)" asp-controller="Public" asp-action="Index">Home</a>
+        <a class="@(activePage == "Projeto" ? "active" : null)" asp-controller="Public" asp-action="Projeto">Projeto</a>
+        <a class="@(activePage == "Login" ? "active" : null)" asp-controller="Account" asp-action="Login">Login</a>
+    </nav>
+</header>
